@@ -152,25 +152,30 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
 
   /* ----- MAGNETIC BUTTONS (primary CTAs only) ----- */
-  function makeMagnetic(el, distance = 0.4) {
+  function makeMagnetic(el, options = {}) {
+    const {
+      distance = 0.35,      // pull multiplier
+      triggerArea = 120     // extra px around button where pull begins
+    } = options;
     let targetX = 0, targetY = 0;
     let currentX = 0, currentY = 0;
-    let isHovered = false;
-
-    el.addEventListener('mouseenter', () => { isHovered = true; });
-    el.addEventListener('mouseleave', () => { isHovered = false; });
 
     document.addEventListener('mousemove', (e) => {
-      if (!isHovered) {
-        targetX = 0;
-        targetY = 0;
-        return;
-      }
       const rect = el.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
-      targetX = (e.clientX - cx) * distance;
-      targetY = (e.clientY - cy) * distance;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const radius = Math.max(rect.width, rect.height) / 2 + triggerArea;
+      if (dist < radius) {
+        const strength = 1 - (dist / radius);  // 1 at center, 0 at edge
+        targetX = dx * distance * strength;
+        targetY = dy * distance * strength;
+      } else {
+        targetX = 0;
+        targetY = 0;
+      }
     });
 
     function tick() {
