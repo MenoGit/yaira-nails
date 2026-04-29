@@ -424,7 +424,6 @@ img { max-width: 100%; display: block; }
   font-size: 0.85rem;
   letter-spacing: 0.05em;
   color: var(--ink-soft);
-  text-transform: uppercase;
   font-weight: 500;
 }
 .about-stats {
@@ -549,9 +548,9 @@ img { max-width: 100%; display: block; }
   background-color: var(--rose-soft);
 }
 .ph-portrait {
-  background:
-    radial-gradient(circle at 50% 35%, rgba(255,255,255,0.35), transparent 45%),
-    linear-gradient(135deg, #d49aaa 0%, #8c4d63 60%, #2d1820 100%);
+  background-image: url('nails/photos/hero/yaira-hero-original.jpg');
+  background-size: cover;
+  background-position: center;
 }
 .ph-1 { background-image: url('nails/photos/gallery/01.jpg'); }
 .ph-2 { background-image: url('nails/photos/gallery/02.jpg'); }
