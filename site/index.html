@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yaira's Nail Creations — Luxury Nail Art</title>
+  <meta name="description" content="Yaira Soto — bespoke nail art and luxury manicures. Acrylic, gel, chrome, hand-painted designs. Book your appointment today." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- LOADER -->
+  <div class="loader" id="loader">
+    <div class="loader-inner">
+      <span class="loader-text">Yaira's</span>
+      <span class="loader-bar"></span>
+    </div>
+  </div>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <a href="#top" class="nav-logo">Yaira<span>.</span></a>
+    <nav class="nav-links">
+      <a href="#about">About</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#services">Services</a>
+      <a href="#book">Book</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a href="#book" class="nav-cta">Book Now</a>
+    <button class="nav-burger" id="burger" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about">About</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#services">Services</a>
+    <a href="#book">Book</a>
+    <a href="#contact">Contact</a>
+  </div>
+
+  <main id="top">
+
+    <!-- HERO -->
+    <section class="hero">
+
+      <div class="hero-eyebrow">
+        <div class="hero-tag">WELCOME TO YAIRA'S NAIL CREATIONS</div>
+        <div class="hero-sub">Ready to give your nails the care they deserve</div>
+      </div>
+
+      <!--
+        HERO PORTRAIT:
+        The .hero-portrait div below uses a CSS gradient placeholder.
+        To swap in Yaira's real photo, do ONE of these:
+          (a) Save her cut-out photo as nails/photos/yaira-portrait.png
+              then in styles.css change `.ph-yaira` to:
+                background: url('nails/photos/yaira-portrait.png') center bottom / contain no-repeat;
+          (b) Or replace this <div class="ph ph-yaira"></div> with:
+                <img src="nails/photos/yaira-portrait.png" alt="Yaira Soto">
+        For best effect: photo with transparent background (PNG cutout), full body
+        or upper body, looking at camera, soft natural light.
+      -->
+      <div class="hero-mega" aria-label="Nail art by Yaira">
+        <span class="hero-half">NA</span>
+        <div class="hero-portrait">
+          <div class="ph ph-yaira"></div>
+        </div>
+        <span class="hero-half">IL</span>
+      </div>
+      <div class="hero-script">art by <em>Yaira</em></div>
+
+      <h1 class="hero-tagline">
+        <span><em>Made</em> with love</span>
+        <span>&amp; <em>detail</em>.</span>
+      </h1>
+
+      <div class="hero-location">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        By appointment only
+      </div>
+
+      <div class="hero-meta">
+        <div>
+          <span class="hero-meta-label">Specialty</span>
+          <span class="hero-meta-value">Acrylic · Gel · Chrome · Hand-painted</span>
+        </div>
+        <div>
+          <span class="hero-meta-label">Languages</span>
+          <span class="hero-meta-value">English &amp; Español</span>
+        </div>
+        <div>
+          <span class="hero-meta-label">Booking</span>
+          <span class="hero-meta-value">Tue – Sat</span>
+        </div>
+      </div>
+
+      <a href="#gallery" class="hero-scroll">
+        <span>Scroll</span>
+        <svg width="16" height="40" viewBox="0 0 16 40" fill="none" stroke="currentColor" stroke-width="1.4">
+          <line x1="8" y1="0" x2="8" y2="36"/>
+          <polyline points="3,30 8,38 13,30"/>
+        </svg>
+      </a>
+      <div class="hero-orb"></div>
+    </section>
+
+    <!-- MARQUEE -->
+    <section class="marquee">
+      <div class="marquee-track">
+        <span>Acrylic Sets</span><span class="dot">✦</span>
+        <span>Gel-X</span><span class="dot">✦</span>
+        <span>Chrome &amp; Holographic</span><span class="dot">✦</span>
+        <span>Hand-Painted Art</span><span class="dot">✦</span>
+        <span>French &amp; Ombré</span><span class="dot">✦</span>
+        <span>Pedicures</span><span class="dot">✦</span>
+        <span>Acrylic Sets</span><span class="dot">✦</span>
+        <span>Gel-X</span><span class="dot">✦</span>
+        <span>Chrome &amp; Holographic</span><span class="dot">✦</span>
+        <span>Hand-Painted Art</span><span class="dot">✦</span>
+        <span>French &amp; Ombré</span><span class="dot">✦</span>
+        <span>Pedicures</span><span class="dot">✦</span>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about" id="about">
+      <div class="about-num">01 / About</div>
+      <div class="about-grid">
+        <div class="about-image reveal">
+          <div class="about-image-frame">
+            <div class="ph ph-portrait" aria-label="Portrait of Yaira"></div>
+          </div>
+          <div class="about-image-tag">— Yaira Soto, founder</div>
+        </div>
+        <div class="about-text reveal">
+          <h2 class="about-title">
+            Where every set <em>tells a story</em> &mdash;
+            yours.
+          </h2>
+          <p>
+            I&rsquo;m Yaira, a licensed nail artist obsessed with the small details:
+            the perfect shape, the right shimmer, the brushstroke that turns a manicure
+            into a piece of art. Each appointment is a one-on-one experience &mdash;
+            consultation, custom design, and time taken to make sure you leave loving
+            your hands.
+          </p>
+          <p class="quiet">
+            Based in your area &middot; bilingual (EN/ES) &middot; sanitary &amp; licensed.
+          </p>
+          <div class="about-stats">
+            <div><b>500+</b><span>happy clients</span></div>
+            <div><b>5 yrs</b><span>experience</span></div>
+            <div><b>100%</b><span>custom designs</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="gallery" id="gallery">
+      <div class="gallery-head">
+        <div class="about-num">02 / Gallery</div>
+        <h2 class="section-title">
+          A small <em>archive</em> of recent work.
+        </h2>
+        <p class="section-sub">
+          Every set below was hand-designed in studio. Tap any image to view it larger.
+        </p>
+      </div>
+      <div class="gallery-grid">
+        <figure class="g g-1 reveal" data-cap="3D hibiscus &amp; pearls"><div class="ph ph-1"></div></figure>
+        <figure class="g g-2 reveal" data-cap="Tropical shell french"><div class="ph ph-2"></div></figure>
+        <figure class="g g-3 reveal" data-cap="Fruit medley set"><div class="ph ph-3"></div></figure>
+        <figure class="g g-4 reveal" data-cap="Red french &amp; animal print"><div class="ph ph-4"></div></figure>
+        <figure class="g g-5 reveal" data-cap="Koi &amp; lily art"><div class="ph ph-5"></div></figure>
+        <figure class="g g-6 reveal" data-cap="White french &amp; 3D fruit"><div class="ph ph-6"></div></figure>
+        <figure class="g g-7 reveal" data-cap="Bats &amp; ghosts Halloween"><div class="ph ph-7"></div></figure>
+        <figure class="g g-8 reveal" data-cap="Cherries &amp; daisies"><div class="ph ph-8"></div></figure>
+      </div>
+      <a class="gallery-cta" href="https://www.instagram.com/yairas.nailcreations/" target="_blank" rel="noopener">
+        See full archive on Instagram &nbsp;→
+      </a>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="services" id="services">
+      <div class="about-num">03 / Services &amp; Pricing</div>
+      <h2 class="section-title">
+        Pricing is a <em>starting point</em>.
+      </h2>
+      <p class="section-sub">
+        Custom art &amp; extensions priced at consultation. All sets include shaping,
+        cuticle care, and a top coat.
+      </p>
+
+      <div class="svc-list">
+        <div class="svc reveal">
+          <div class="svc-name">Hard Gel</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$30</div>
+          <div class="svc-desc">Strong gel overlay for natural nails — adds length and durability.</div>
+        </div>
+        <div class="svc reveal">
+          <div class="svc-name">Builder Gel</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$25</div>
+          <div class="svc-desc">Flexible structured gel — strengthens and protects natural nails.</div>
+        </div>
+        <div class="svc reveal">
+          <div class="svc-name">Acrylic Overlay</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$25</div>
+          <div class="svc-desc">Acrylic over your natural nails — no extension, just reinforcement.</div>
+        </div>
+        <div class="svc reveal">
+          <div class="svc-name">Short Acrylic Full Set</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$45 / $50</div>
+          <div class="svc-desc">Sculpted short-length extensions, shaped to your style.</div>
+        </div>
+        <div class="svc reveal">
+          <div class="svc-name">Medium Acrylic Full Set</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$55 / $60</div>
+          <div class="svc-desc">A go-to length — versatile for everyday and full nail art.</div>
+        </div>
+        <div class="svc reveal">
+          <div class="svc-name">Long Acrylic Full Set</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$65 / $70</div>
+          <div class="svc-desc">Statement length with the canvas for hand-painted designs.</div>
+        </div>
+        <div class="svc reveal">
+          <div class="svc-name">XL Acrylic Full Set</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$75 / $80</div>
+          <div class="svc-desc">Bold extra-long set — built for drama and detail.</div>
+        </div>
+        <div class="svc reveal">
+          <div class="svc-name">XXL Acrylic Full Set</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$85 / $100</div>
+          <div class="svc-desc">Maximum length — sculpted strong, fully custom shape.</div>
+        </div>
+        <div class="svc reveal">
+          <div class="svc-name">Soak Off</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$15</div>
+          <div class="svc-desc">Gentle removal of existing acrylic, gel, or builder gel.</div>
+        </div>
+        <div class="svc reveal">
+          <div class="svc-name">Gel Manicure</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$15</div>
+          <div class="svc-desc">Long-lasting color on natural nails with shaping and cuticle care.</div>
+        </div>
+        <div class="svc reveal">
+          <div class="svc-name">Gel Pedicure</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$15</div>
+          <div class="svc-desc">Gel polish pedicure — chip-resistant and glossy.</div>
+        </div>
+        <div class="svc reveal">
+          <div class="svc-name">Builder Gel Pedicure</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$25</div>
+          <div class="svc-desc">Reinforced toes — builder gel adds strength and shape.</div>
+        </div>
+        <div class="svc reveal">
+          <div class="svc-name">Acrylic Pedicure</div>
+          <div class="svc-line"></div>
+          <div class="svc-price">$35</div>
+          <div class="svc-desc">Sculpted acrylic on toes for a flawless, long-lasting finish.</div>
+        </div>
+      </div>
+
+      <!-- SERVICE EXAMPLES — image cards (gradient placeholders for now) -->
+      <div class="svc-examples-head reveal">
+        <div class="about-num">Examples</div>
+        <h3 class="svc-examples-title">A few of <em>Yaira's</em> looks.</h3>
+        <p class="section-sub">
+          A peek at what each service can look like. Mix &amp; match — every set is custom.
+        </p>
+      </div>
+
+      <div class="svc-examples">
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-1"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">Hard Gel</span>
+            <span class="svc-ex-price">$30</span>
+          </figcaption>
+        </figure>
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-2"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">Builder Gel</span>
+            <span class="svc-ex-price">$25</span>
+          </figcaption>
+        </figure>
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-3"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">Acrylic Overlay</span>
+            <span class="svc-ex-price">$25</span>
+          </figcaption>
+        </figure>
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-4"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">Short Acrylic Set</span>
+            <span class="svc-ex-price">$45 / $50</span>
+          </figcaption>
+        </figure>
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-5"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">Medium Acrylic Set</span>
+            <span class="svc-ex-price">$55 / $60</span>
+          </figcaption>
+        </figure>
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-6"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">Long Acrylic Set</span>
+            <span class="svc-ex-price">$65 / $70</span>
+          </figcaption>
+        </figure>
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-7"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">XL Acrylic Set</span>
+            <span class="svc-ex-price">$75 / $80</span>
+          </figcaption>
+        </figure>
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-8"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">XXL Acrylic Set</span>
+            <span class="svc-ex-price">$85 / $100</span>
+          </figcaption>
+        </figure>
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-9"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">Soak Off</span>
+            <span class="svc-ex-price">$15</span>
+          </figcaption>
+        </figure>
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-10"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">Gel Manicure</span>
+            <span class="svc-ex-price">$15</span>
+          </figcaption>
+        </figure>
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-11"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">Gel Pedicure</span>
+            <span class="svc-ex-price">$15</span>
+          </figcaption>
+        </figure>
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-12"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">Builder Gel Pedicure</span>
+            <span class="svc-ex-price">$25</span>
+          </figcaption>
+        </figure>
+        <figure class="svc-ex reveal">
+          <div class="svc-ex-img sx-13"></div>
+          <figcaption class="svc-ex-cap">
+            <span class="svc-ex-name">Acrylic Pedicure</span>
+            <span class="svc-ex-price">$35</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- BOOKING -->
+    <section class="book" id="book">
+      <div class="book-inner">
+        <div class="about-num light">04 / Book</div>
+        <h2 class="section-title light">
+          Ready to book your <em>set</em>?
+        </h2>
+        <p class="section-sub light">
+          Appointments run Tuesday through Saturday. Please review policies before booking.
+        </p>
+
+        <!--
+          BOOKING WIDGET:
+          Replace the link below with your booking URL (Booksy, Square, Calendly, GlossGenius, etc.)
+          OR replace this entire div with the iframe embed code from your booking platform.
+          Booksy example: <iframe src="https://booksy.com/widget/..." width="100%" height="800"></iframe>
+        -->
+        <div class="book-card">
+          <div class="book-card-inner">
+            <div>
+              <div class="book-card-label">Schedule online</div>
+              <div class="book-card-title">View live availability</div>
+              <p class="book-card-desc">
+                Pick your service, date, and time. You&rsquo;ll get a confirmation by text.
+              </p>
+            </div>
+            <a class="btn-primary" href="https://www.instagram.com/yairas.nailcreations/" target="_blank" rel="noopener">
+              Book Appointment →
+            </a>
+          </div>
+          <div class="book-card-policies">
+            <div><b>Deposit</b><span>$20 non-refundable, goes toward total.</span></div>
+            <div><b>Cancellation</b><span>24 hr notice required.</span></div>
+            <div><b>Late</b><span>15 min grace, then rescheduling fee.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact" id="contact">
+      <div class="about-num">05 / Contact</div>
+      <h2 class="section-title contact-title">
+        Let&rsquo;s <em>create</em> something <br/>beautiful together.
+      </h2>
+      <div class="contact-grid">
+        <a href="https://www.instagram.com/yairas.nailcreations/" target="_blank" rel="noopener" class="contact-card">
+          <div class="contact-card-label">Instagram</div>
+          <div class="contact-card-value">@yairas.nailcreations</div>
+          <div class="contact-card-arrow">→</div>
+        </a>
+        <a href="mailto:hello@yairas.nailcreations" class="contact-card">
+          <div class="contact-card-label">Email</div>
+          <div class="contact-card-value">hello@yairas.nailcreations</div>
+          <div class="contact-card-arrow">→</div>
+        </a>
+        <a href="tel:+13605675904" class="contact-card">
+          <div class="contact-card-label">Text</div>
+          <div class="contact-card-value">(360) 567-5904</div>
+          <div class="contact-card-arrow">→</div>
+        </a>
+        <div class="contact-card static">
+          <div class="contact-card-label">Studio</div>
+          <div class="contact-card-value">By appointment only</div>
+          <div class="contact-card-sub">Vancouver, WA · address shared upon booking</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-big">Yaira's Nail Creations</div>
+      <div class="footer-meta">
+        <span>© <span id="year"></span> Yaira Soto · All rights reserved</span>
+        <span>Hecho con ♡</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">×</button>
+    <div class="lightbox-content">
+      <div class="lightbox-image" id="lightboxImage"></div>
+      <div class="lightbox-cap" id="lightboxCap"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
