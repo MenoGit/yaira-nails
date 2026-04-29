@@ -2,6 +2,9 @@
    Yaira's Nail Creations — interactions
    ===================================================== */
 
+// TODO: Replace with Booksy URL once Yaira creates her free account at booksy.com/biz/sign-up
+const BOOKING_URL = 'https://www.instagram.com/yairas.nailcreations/';
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ----- LOADER ----- */
@@ -15,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ----- YEAR ----- */
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ----- BOOKING URL hookup ----- */
+  document.querySelectorAll('.btn-primary').forEach(el => { el.href = BOOKING_URL; });
 
   /* ----- CUSTOM CURSOR ----- */
   const cursor = document.getElementById('cursor');
