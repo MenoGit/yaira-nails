@@ -115,4 +115,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* ----- ANIMATED COUNTER on about stats ----- */
+  const statsRow = document.querySelector('.about-stats');
+  const counters = statsRow ? statsRow.querySelectorAll('.counter') : [];
+  if (statsRow && counters.length) {
+    const animateCount = (el) => {
+      const target = parseInt(el.dataset.target, 10);
+      const duration = 1600;
+      const start = performance.now();
+      const ease = (t) => 1 - Math.pow(1 - t, 3);
+      const tick = (now) => {
+        const t = Math.min((now - start) / duration, 1);
+        el.textContent = Math.round(ease(t) * target);
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+    const statsObs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          counters.forEach(animateCount);
+          statsObs.disconnect();
+        }
+      });
+    }, { threshold: 0.4 });
+    statsObs.observe(statsRow);
+  }
+
 });

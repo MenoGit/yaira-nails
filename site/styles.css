@@ -442,6 +442,10 @@ img { max-width: 100%; display: block; }
   font-weight: 500;
   font-size: 1.8rem;
 }
+.about-stats .counter {
+  color: var(--rose);
+  font-variant-numeric: tabular-nums;
+}
 .about-stats span {
   font-size: 0.75rem; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--ink-soft);
