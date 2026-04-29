@@ -115,31 +115,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ----- ANIMATED COUNTER on about stats ----- */
-  const statsRow = document.querySelector('.about-stats');
-  const counters = statsRow ? statsRow.querySelectorAll('.counter') : [];
-  if (statsRow && counters.length) {
-    const animateCount = (el) => {
-      const target = parseInt(el.dataset.target, 10);
-      const duration = 1600;
+  /* ----- ANIMATED COUNTERS ----- */
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseInt(el.dataset.target, 10) || 0;
+      const duration = 1600; // ms
       const start = performance.now();
-      const ease = (t) => 1 - Math.pow(1 - t, 3);
-      const tick = (now) => {
+      function tick(now) {
         const t = Math.min((now - start) / duration, 1);
-        el.textContent = Math.round(ease(t) * target);
+        // ease-out cubic
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = Math.round(target * eased);
         if (t < 1) requestAnimationFrame(tick);
-      };
+      }
       requestAnimationFrame(tick);
-    };
-    const statsObs = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          counters.forEach(animateCount);
-          statsObs.disconnect();
-        }
-      });
-    }, { threshold: 0.4 });
-    statsObs.observe(statsRow);
-  }
+      counterObserver.unobserve(el);
+    });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
 
 });
