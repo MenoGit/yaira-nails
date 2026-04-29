@@ -151,4 +151,37 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.4 });
   document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
 
+  /* ----- MAGNETIC BUTTONS (primary CTAs only) ----- */
+  function makeMagnetic(el, distance = 0.4) {
+    let targetX = 0, targetY = 0;
+    let currentX = 0, currentY = 0;
+    let isHovered = false;
+
+    el.addEventListener('mouseenter', () => { isHovered = true; });
+    el.addEventListener('mouseleave', () => { isHovered = false; });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isHovered) {
+        targetX = 0;
+        targetY = 0;
+        return;
+      }
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      targetX = (e.clientX - cx) * distance;
+      targetY = (e.clientY - cy) * distance;
+    });
+
+    function tick() {
+      currentX += (targetX - currentX) * 0.18;
+      currentY += (targetY - currentY) * 0.18;
+      el.style.transform = `translate(${currentX}px, ${currentY}px)`;
+      requestAnimationFrame(tick);
+    }
+    tick();
+  }
+
+  document.querySelectorAll('.nav-cta, .btn-primary').forEach(makeMagnetic);
+
 });
