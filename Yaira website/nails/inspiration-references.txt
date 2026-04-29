@@ -1,0 +1,77 @@
+YAIRA'S NAILS — WEBSITE INSPIRATION SHORTLIST
+=============================================
+
+Curated from Awwwards, ranked by relevance to Yaira's brand (warm,
+feminine, editorial, glam). Visit each, screenshot the parts you like,
+then drop the screenshots back into the chat.
+
+---
+
+TIER 1 — STRONGEST MATCHES FOR YAIRA'S VIBE
+-------------------------------------------
+
+1. BASE COAT NAIL SALON  (Honorable Mention)
+   Awwwards page : https://www.awwwards.com/sites/base-coat-nail-salon
+   Why it fits   : Soft warm-pink palette, big editorial photography
+                   of hands, circular logo typography, confident salon
+                   identity. This is closest to the direction we already
+                   started for Yaira.
+   Steal these   : color palette, hand photography style, type-on-curve
+                   logo treatment.
+
+2. SWITCH NAILS  (Nominee, Apr 2026)
+   Awwwards page : https://www.awwwards.com/sites/switch-nails
+   Why it fits   : E-commerce, but the way it presents press features
+                   (Vogue, Elle, Plaza, Femina, Daisy) and the editorial
+                   product photography is gold. Fashion-magazine energy.
+   Steal these   : "as featured in" magazine logo strip, editorial
+                   product/hand shots, clean fashion-house typography.
+
+3. YUKIE NAIL & HEARTS HAIR NY  (Honorable Mention)
+   Awwwards page : https://www.awwwards.com/sites/yukie-nail-and-hearts-hair-ny
+   Why it fits   : Dark, cinematic photography with outline-only white
+                   typography over moody portraits. Big NYC fashion vibe.
+                   A more dramatic, edgier path if Yaira wants that.
+   Steal these   : outline typography over photo, vertical side-bar
+                   typography, dramatic mood.
+
+---
+
+TIER 2 — ADJACENT (HAIR / BEAUTY SALONS) WITH GREAT DESIGN
+---------------------------------------------------------
+
+These aren't nail salons but the design language is exactly what we want
+for a luxury beauty service site.
+
+4. CIELIA SALON OSAKA
+   https://www.awwwards.com/sites/cielia-salon-osaka-umeda
+
+5. IL COLORISTA SALON
+   https://www.awwwards.com/sites/il-colorista-salon
+
+6. MARCO AMBROSI SALON
+   https://www.awwwards.com/sites/marco-ambrosi-salon
+
+7. HAIRDRESSING SALON POPS
+   https://www.awwwards.com/sites/hairdressing-salon-pops
+
+8. SERENITY HAIR SALON BLAXLAND
+   https://www.awwwards.com/sites/serenity-hair-salon-blaxland
+
+---
+
+WORKFLOW
+--------
+
+1. Open each Tier 1 link.
+2. Click "Visit Site" on the Awwwards page to see the live design.
+3. As you scroll through, screenshot the sections you love
+   (hero, gallery layout, booking CTA, contact, footer).
+4. Drop the screenshots into the Cowork chat with a quick note like
+   "I love this hero from Base Coat" or "match this footer style."
+5. I'll redesign Yaira's site against those references — that gets us
+   from Level 2 to a clean Level 3.
+
+For Level 4 (cloning), pick the ONE site you love most, hit Ctrl+U
+on its live URL, and paste the entire HTML into the chat. I'll
+deconstruct how their effects work and adapt them for Yaira.
