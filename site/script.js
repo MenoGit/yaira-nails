@@ -51,6 +51,21 @@ document.addEventListener('DOMContentLoaded', () => {
     lastY = y;
   });
 
+  /* ----- SCROLL PROGRESS BAR (spring-eased) ----- */
+  const scrollProgress = document.getElementById('scrollProgress');
+  if (scrollProgress) {
+    let target = 0;
+    let current = 0;
+    function tickProgress() {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      target = max > 0 ? (window.scrollY / max) : 0;
+      current += (target - current) * 0.18;
+      scrollProgress.style.width = (current * 100) + '%';
+      requestAnimationFrame(tickProgress);
+    }
+    tickProgress();
+  }
+
   /* ----- MOBILE MENU ----- */
   const burger = document.getElementById('burger');
   const mobileMenu = document.getElementById('mobileMenu');

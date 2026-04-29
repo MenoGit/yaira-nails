@@ -17,6 +17,18 @@
   --shadow: 0 30px 60px -20px rgba(26, 14, 18, 0.2);
 }
 
+/* ===== SCROLL PROGRESS ===== */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: var(--holo);
+  z-index: 10000;
+  pointer-events: none;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
