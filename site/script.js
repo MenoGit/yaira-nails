@@ -121,11 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!entry.isIntersecting) return;
       const el = entry.target;
       const target = parseInt(el.dataset.target, 10) || 0;
-      const duration = 1600; // ms
+      const duration = 2400; // ms
       const start = performance.now();
       function tick(now) {
         const t = Math.min((now - start) / duration, 1);
-        // ease-out cubic
+        // ease-out cubic — slow, deliberate finish
         const eased = 1 - Math.pow(1 - t, 3);
         el.textContent = Math.round(target * eased);
         if (t < 1) requestAnimationFrame(tick);

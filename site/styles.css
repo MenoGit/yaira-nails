@@ -445,6 +445,9 @@ img { max-width: 100%; display: block; }
 .about-stats .counter {
   color: var(--rose);
   font-variant-numeric: tabular-nums;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
 }
 .about-stats span {
   font-size: 0.75rem; letter-spacing: 0.1em;
