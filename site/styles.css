@@ -1279,12 +1279,51 @@ body.lightbox-open a {
   .svc:hover { padding-left: 0; padding-right: 0; background: transparent; }
 
   .film-section { margin-top: 0; padding: 2rem 0 3.5rem; }
-  .film-strip-stage { height: 514px; }   /* slightly tighter on narrow screens (+14 for text row) */
+  /* Removed the old `.film-strip-stage { height: 514px }` override here:
+     it was sized for an earlier layout and was making the photo frames
+     extend 8px past where the bottom sprocket starts. The new ≤768px
+     breakpoint below now provides correctly-proportioned mobile sizing;
+     the 768–900px range falls back to the desktop dimensions. */
 
   .book-card-inner { flex-direction: column; align-items: flex-start; }
   .book-card-policies { grid-template-columns: 1fr; }
 
   .contact-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== Film strip — mobile (≤768px) =================================
+   Proportional shrink: stage 534→380, frame 320→260, sprocket strip
+   32→24 with smaller 11×7 holes, tracking text 8→7px. Photo frames'
+   height is matched to the .film-frames container so the matting can
+   never overlap into the sprocket strips' reserved zones, and the
+   track width updates so seamless-loop math (driven by FRAME_WIDTH
+   in JS via syncDimensions) stays exact. */
+@media (max-width: 768px) {
+  .film-strip-stage {
+    height: 380px;
+  }
+  .film-track {
+    width: 10140px;       /* 260 × 39 frames */
+  }
+  .film-sprocket-row {
+    height: 24px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='65' height='24' viewBox='0 0 65 24'><rect x='27' y='8.5' width='11' height='7' rx='1' fill='%23fbf6f2'/></svg>");
+    background-size: 65px 24px;
+  }
+  .film-tracking-text {
+    top: 36px;            /* 8 buffer + 24 sprocket + 4 gap */
+    height: 12px;
+    font-size: 7px;
+  }
+  .film-frames {
+    top: 52px;            /* 8 + 24 + 4 + 12 + 4 */
+    height: 290px;
+  }
+  .film-frame {
+    width: 260px;
+    height: 290px;        /* matches .film-frames height — bounds the
+                             matting so it can't bleed into sprockets */
+  }
 }
 
 /* ===== HERO BOTANICALS (decorative line-art layer) =====

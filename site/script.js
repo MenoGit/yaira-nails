@@ -215,10 +215,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const track = document.getElementById('filmTrack');
     if (!stage || !track) return;
 
-    const FRAME_WIDTH = 320;
+    // FRAME_WIDTH + TOTAL_WIDTH are 'let' — the mobile media query swaps
+    // the rendered button width (320 → 260), so syncDimensions() rereads
+    // the actual offsetWidth on init AND on every resize. Keeps the
+    // falloff math + scrollPos wrap point in sync across breakpoints.
+    let FRAME_WIDTH = 320;
     const SCROLL_SPEED = 35;        // px/sec
     const EXAMPLES_COUNT = 13;
-    const TOTAL_WIDTH = FRAME_WIDTH * EXAMPLES_COUNT;   // = 4160
+    let TOTAL_WIDTH = FRAME_WIDTH * EXAMPLES_COUNT;
 
     // Printed film-stock tracking text along the top sprocket strip.
     // 40 reps of the 49-char segment ≈ 16.6k chars — comfortably wider
@@ -279,6 +283,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Recalibrate FRAME_WIDTH from the actual rendered button so the
+    // mobile breakpoint (260px) and desktop (320px) both work without
+    // hardcoded magic numbers.
+    function syncDimensions() {
+      const sample = track.querySelector('.film-frame');
+      if (!sample) return;
+      const w = sample.offsetWidth;
+      if (w > 0 && Math.abs(w - FRAME_WIDTH) > 0.5) {
+        FRAME_WIDTH = w;
+        TOTAL_WIDTH = FRAME_WIDTH * EXAMPLES_COUNT;
+      }
+    }
+    syncDimensions();
+    window.addEventListener('resize', syncDimensions);
+
     function frame(now) {
       if (!isPaused && !isDragging && !reducedMotion.matches) {
         const dt = lastTime ? (now - lastTime) / 1000 : 0;
@@ -309,14 +328,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function onPointerDown(e) {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       pressed = true;
-      isPressed = true;
+      // Don't pause yet — wait for an actual drag past threshold. A
+      // tap-without-drag (mobile) shouldn't freeze the auto-scroll, and
+      // hover-pause already covers desktop click-without-drag.
       didDrag = false;
       isDragging = false;
       pressX = e.clientX;
       pressY = e.clientY;
       scrollAtPress = scrollPos;
       activePointerId = e.pointerId;
-      updatePause();              // FORCE-PAUSE on press, not just hover
     }
     function onPointerMove(e) {
       if (!pressed) return;
@@ -325,8 +345,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const dy = pressY - e.clientY;
       if (!isDragging && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) {
         isDragging = true;
+        isPressed = true;        // NOW pause auto-scroll — real drag started
         didDrag = true;
         stage.classList.add('is-dragging');
+        updatePause();
       }
       if (isDragging) {
         scrollPos = scrollAtPress + dx;
@@ -372,11 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function openModal(sx, name) {
-      console.log('[modal] openModal called', { sx: sx, name: name });
-      if (!modal || !modalPhoto) {
-        console.log('[modal] BAILED — missing element', { modal: modal, modalPhoto: modalPhoto });
-        return;
-      }
+      if (!modal || !modalPhoto) return;
       const url = getServicePhotoUrl(sx);
       // Reset develop state BEFORE setting src so the dim baseline paints
       // before the new image appears and the transition begins from there.
@@ -396,7 +414,6 @@ document.addEventListener('DOMContentLoaded', () => {
           modalPhoto.classList.add('developed');
         });
       });
-      console.log('[modal] should now be open, .is-open class added');
     }
     function closeModal() {
       if (!modal) return;
@@ -414,12 +431,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // the click to a common ancestor). Bails if a real drag occurred.
     stage.addEventListener('click', (e) => {
       const btn = e.target.closest('.film-frame');
-      const dist = Math.max(
-        Math.abs((e.clientX || 0) - pressX),
-        Math.abs((e.clientY || 0) - pressY)
-      );
-      console.log('[svc-ex] click fired', { target: e.target, frame: btn, sx: btn && btn.getAttribute('data-sx') });
-      console.log('[click guard] wasDragged=', didDrag, ' distance=', dist);
       if (!btn) return;
       if (didDrag) {
         e.preventDefault();
