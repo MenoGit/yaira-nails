@@ -31,10 +31,16 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; overflow-x: hidden; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  /* Explicit cream so anything bleeding past sections (or showing
+     through gaps) lands on the same cream as the film band edges. */
+  background-color: var(--cream);
+}
 
 body {
-  background: var(--bg);
+  background-color: var(--cream);
   color: var(--ink);
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 16px;
@@ -43,6 +49,7 @@ body {
   overflow-x: hidden;
   cursor: none;
 }
+main { background-color: var(--cream); }
 
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
@@ -99,6 +106,24 @@ img { max-width: 100%; display: block; }
 .cursor.hover { width: 60px; height: 60px; }
 @media (hover: none) { .cursor, .cursor-dot { display: none; } body { cursor: auto; } }
 
+/* While ANY lightbox modal is open, hide the custom cursor and restore
+   the native browser cursor — the cream backdrop drowns out the
+   light-colored custom cursor, leaving the user with no pointer. */
+body.lightbox-open #cursor,
+body.lightbox-open #cursorDot {
+  display: none;
+}
+body.lightbox-open,
+body.lightbox-open * {
+  cursor: auto !important;
+}
+body.lightbox-open .film-modal-close,
+body.lightbox-open .lightbox-close,
+body.lightbox-open button,
+body.lightbox-open a {
+  cursor: pointer !important;
+}
+
 /* ===== NAV ===== */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -107,7 +132,8 @@ img { max-width: 100%; display: block; }
   transition: background 0.35s ease, backdrop-filter 0.35s ease, padding 0.35s ease;
 }
 .nav.scrolled {
-  background: rgba(245, 235, 229, 0.85);
+  /* Same cream as body/sections, with alpha so the blur reads. */
+  background: rgba(251, 246, 242, 0.85);
   backdrop-filter: blur(12px);
   padding: 0.85rem 4vw;
   border-bottom: 1px solid var(--line);
@@ -562,7 +588,12 @@ img { max-width: 100%; display: block; }
 
 /* ===== SERVICES ===== */
 .services {
-  padding: 8rem 4vw;
+  background-color: var(--cream);
+  /* Top stays generous to break from gallery above. Bottom 5rem
+     combines with .film-section padding-bottom 4rem to give ~144px of
+     cream below the film strip — enough to "complete" the section
+     before the dark .book band starts. */
+  padding: 8rem 4vw 5rem;
 }
 .svc-list {
   border-top: 1px solid var(--line);
@@ -602,6 +633,7 @@ img { max-width: 100%; display: block; }
 
 .svc-fills-head,
 .svc-examples-head {
+  background-color: var(--cream);
   margin-top: 6rem;
   padding-top: 4rem;
   border-top: 1px solid var(--line);
@@ -624,8 +656,7 @@ img { max-width: 100%; display: block; }
    Rebuilt from film-strip-REFERENCE.tsx in vanilla HTML/CSS/JS.
    Tokens (literal hex per design):
      --film-stock var(--ink)    — rich matte film black
-     --film-cream var(--cream)  — sprocket holes + parchment behind strip
-     --film-matt  #f8f4ef       — cream matting around each photo
+     --film-cream var(--cream)  — sprocket holes + parchment + matting
      --film-wine  #722F37       — heading + close-button accent
    Frame: 240px wide, photo height 300px, sprocket strip 24px, 4 sprockets/frame.
    ============================================================== */
@@ -635,10 +666,13 @@ img { max-width: 100%; display: block; }
   left: 50%;
   transform: translateX(-50%);
   background: var(--cream);
-  /* Heading sits above on var(--bg); add modest top margin so the
-     parchment band starts a touch below the section-sub. */
-  margin-top: 2.5rem;
-  padding: 5rem 0;
+  /* Section-sub above already provides ~4rem of breathing room via its
+     margin-bottom — no extra top margin needed. Top padding 2.5rem keeps
+     the strip clear of the heading; bottom padding 4rem (combined with
+     .services padding-bottom 5rem) lets the film "complete" before the
+     next dark section begins. */
+  margin-top: 0;
+  padding: 2.5rem 0 4rem;
 }
 .film-strip {
   position: relative;
@@ -652,9 +686,14 @@ img { max-width: 100%; display: block; }
 }
 .film-strip-stage {
   position: relative;
-  /* 8 buffer + 32 sprocket + 10 gap + 420 photo + 10 gap + 32 sprocket + 8 buffer */
-  height: 520px;
-  background: var(--ink);
+  /* 8 buffer + 32 sprocket + 4 gap + 14 tracking-text + 4 gap +
+     420 photo + 12 gap + 32 sprocket + 8 buffer = 534 */
+  height: 534px;
+  /* Stage stays cream — the dark film stock now lives on .film-track
+     itself, so as the track translates the entire dark sheet (with its
+     grain, worn edges, sprockets, tracking text, and photos) physically
+     slides as one piece. */
+  background: var(--cream);
   overflow: hidden;
   cursor: grab;
   user-select: none;
@@ -662,34 +701,51 @@ img { max-width: 100%; display: block; }
   touch-action: pan-y;
 }
 .film-strip-stage.is-dragging { cursor: grabbing; }
-.film-grain {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.06;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-}
-.film-edge {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 2px;
-  pointer-events: none;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(60, 55, 50, 0.4) 10%,
-    rgba(60, 55, 50, 0.3) 50%,
-    rgba(60, 55, 50, 0.4) 90%,
-    transparent 100%);
-}
-.film-edge--top { top: 0; }
-.film-edge--bottom { bottom: 0; }
+/* Film grain + worn edges removed in favor of a clean polished
+   surface. The HTML elements are still in place but hidden so the
+   layout / sprocket positioning math is unaffected. The vertical
+   gloss on .film-track below now does all the depth work. */
+.film-grain,
+.film-edge,
+.film-edge--top,
+.film-edge--bottom { display: none; }
 .film-track {
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 12480px;       /* 320 × 39 frames */
+  /* Polished plastic / wet film gloss. Three stacked gradients over
+     var(--ink), painted top to bottom in declaration order:
+       1. Sharp white rim at the very top edge (only 1.5% tall) — light
+          hitting the curved polished edge.
+       2. Smaller sharp white rim at the very bottom edge — surface
+          curves back under.
+       3. Subtle cylindrical body shading — barely visible, just enough
+          to keep the strip from reading flat.
+     Neutral white (not warm cream) so it reads as reflection rather
+     than a warm halo glow. */
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0)    1.5%,
+      transparent 100%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.10) 0%,
+      rgba(255, 255, 255, 0)    1.5%,
+      transparent 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.04) 0%,
+      rgba(255, 255, 255, 0)    25%,
+      rgba(0, 0, 0, 0.12)       60%,
+      rgba(0, 0, 0, 0.04)       100%
+    ),
+    var(--ink);
   will-change: transform;
 }
 .film-sprocket-row {
@@ -707,10 +763,34 @@ img { max-width: 100%; display: block; }
 }
 .film-sprocket-row--top { top: 8px; }
 .film-sprocket-row--bottom { bottom: 8px; }
+/* Printed-on-film tracking text — lives in its own thin 14px row
+   between the top sprocket strip and the photo row, exactly where 35mm
+   stock prints stock numbers. Inside .film-track so it scrolls with
+   the photos. No overlap with the sprockets. */
+.film-tracking-text {
+  position: absolute;
+  /* 8 (buffer) + 32 (sprocket) + 4 (gap) = 44 */
+  top: 44px;
+  left: 0;
+  height: 14px;
+  width: max-content;
+  display: flex;
+  align-items: center;
+  font-family: 'Courier New', 'Andale Mono', monospace;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.55;
+  white-space: nowrap;
+  pointer-events: none;
+}
 .film-frames {
   position: absolute;
   left: 0;
-  top: 50px;            /* 8 buffer + 32 sprocket + 10 gap */
+  /* 8 buffer + 32 sprocket + 4 gap + 14 tracking-text + 4 gap = 62 */
+  top: 62px;
   height: 420px;
   display: flex;
 }
@@ -735,7 +815,7 @@ img { max-width: 100%; display: block; }
   position: relative;
   height: 100%;
   width: 100%;
-  background: #f8f4ef;
+  background: var(--cream);
   border-radius: 2px;
   padding: 8px;
   overflow: hidden;
@@ -774,30 +854,13 @@ img { max-width: 100%; display: block; }
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   pointer-events: none;
 }
-.film-vignette {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 80px;
-  pointer-events: none;
-  z-index: 10;
-}
-@media (min-width: 768px) {
-  .film-vignette { width: 128px; }
-}
-.film-vignette--left {
-  left: 0;
-  background: linear-gradient(to right, var(--cream) 0%, transparent 100%);
-}
-.film-vignette--right {
-  right: 0;
-  background: linear-gradient(to left, var(--cream) 0%, transparent 100%);
-}
 /* Lightbox modal — opens when a film frame is clicked. */
 .film-modal {
   position: fixed;
   inset: 0;
-  z-index: 1100;
+  /* Above loader (9999), custom cursor (9000), and scroll-progress bar
+     (10000) so nothing else can paint on top once the modal is open. */
+  z-index: 10001;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -817,10 +880,16 @@ img { max-width: 100%; display: block; }
      once the dark film behind is mostly hidden. No gradient — same value end-to-end. */
   background: rgba(251, 246, 242, 0.97);
 }
+/* Outer wrapper (frame + caption). Shrink-to-fit so width hugs the
+   photo's natural rendered width, not a fixed viewport fraction. */
 .film-modal-content {
   position: relative;
-  max-width: 42rem;
-  width: 100%;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: -moz-fit-content;
+  width: fit-content;
+  max-width: 90vw;
   transform: scale(0.95) translateY(1rem);
   opacity: 0;
   transition: transform 0.5s ease-out, opacity 0.5s ease-out;
@@ -829,55 +898,83 @@ img { max-width: 100%; display: block; }
   transform: scale(1) translateY(0);
   opacity: 1;
 }
+/* The dark film frame: shrink-to-fit, NO padding (the photo-wrap's
+   8px horizontal margin gives the frame edges their breathing room,
+   and the sprocket strips' own padding handles their inset). */
 .film-modal-frame {
   position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  width: -moz-fit-content;
+  width: fit-content;
   background: var(--ink);
-  border-radius: 3px;
-  padding: 1rem;
+  border-radius: 4px;
+  padding: 0;
   box-shadow:
     0 25px 80px -20px rgba(0, 0, 0, 0.35),
     0 10px 30px -10px rgba(0, 0, 0, 0.2);
 }
-@media (min-width: 768px) { .film-modal-frame { padding: 1.25rem; } }
 .film-modal-grain {
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0.04;
-  border-radius: 3px;
+  border-radius: 4px;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
+/* Sprocket strips — full frame width, fixed 26px height. Holes
+   distribute via space-around so 10 cream rectangles sit evenly. */
 .film-modal-sprockets {
+  width: 100%;
+  height: 26px;
   display: flex;
-  justify-content: space-between;
-  padding: 0 4px;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px;
 }
-.film-modal-sprockets--top { margin-bottom: 1rem; }
-.film-modal-sprockets--bottom { margin-top: 1rem; }
 .film-modal-sprockets > span {
   display: block;
-  width: 16px;
-  height: 10px;
+  width: 14px;
+  height: 9px;
   background: var(--cream);
   border-radius: 1px;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
 }
+/* Photo wrap = thin cream matting (5px padding) inset 8px from the
+   frame edges. No flex centering — the <img> sizes to its natural
+   aspect via max-* constraints, so wrap sizes to fit it tightly. */
 .film-modal-photo-wrap {
   position: relative;
-  background: #f8f4ef;
+  display: block;
+  background: var(--cream);
   border-radius: 2px;
-  padding: 10px;
+  padding: 5px;
+  margin: 0 8px;
   overflow: hidden;
 }
 .film-modal-photo {
-  width: 100%;
-  aspect-ratio: 4 / 5;
+  display: block;
+  /* Auto sizing keeps the natural aspect — no letterboxing inside the
+     img element itself; the matting hugs the photo. The img naturally
+     scales down (preserving aspect) to fit the smaller of max-width
+     and max-height. */
+  width: auto;
+  height: auto;
+  max-width: min(85vw, 800px);
+  max-height: 75vh;
+  object-fit: contain;
   border-radius: 1px;
-  background-size: cover;
-  background-position: center;
-  background-color: #d0c8bc;
+  /* "Polaroid developing" entrance: photo opens desaturated + slightly
+     dim, then transitions back to full color. JS adds .developed after
+     two rAFs so the dim state paints first. */
+  filter: saturate(0.05) brightness(0.7) contrast(1.15);
+  transition: filter 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.film-modal-photo.developed {
+  filter: saturate(1) brightness(1) contrast(1);
 }
 .film-modal-cap {
+  width: 100%;
   margin-top: 2rem;
   text-align: center;
 }
@@ -895,25 +992,34 @@ img { max-width: 100%; display: block; }
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
+/* Close button is a sibling of .film-modal-content so position:fixed
+   anchors to the viewport (not the transformed modal box). The modal
+   itself controls the show/hide via its .is-open opacity transition. */
 .film-modal-close {
-  position: absolute;
-  top: -0.75rem;
-  right: -0.75rem;
-  width: 2.5rem;
-  height: 2.5rem;
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: #722F37;
+  background: var(--ink);
+  color: var(--cream);   /* drives SVG stroke="currentColor" */
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(114, 47, 55, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease;
+  z-index: 10002;        /* above the modal at 10001 */
+  box-shadow: 0 4px 16px rgba(26, 14, 18, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-.film-modal-close:hover { transform: scale(1.1); }
-@media (min-width: 768px) {
-  .film-modal-close { top: -1rem; right: -1rem; }
+.film-modal-close:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 22px rgba(26, 14, 18, 0.5);
+}
+.film-modal-close:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 3px;
 }
 
 /* service example photos — mapped from reference set; reused by .film-photo */
@@ -1172,8 +1278,8 @@ img { max-width: 100%; display: block; }
   .svc-desc { grid-column: span 2; color: var(--ink-soft); }
   .svc:hover { padding-left: 0; padding-right: 0; background: transparent; }
 
-  .film-section { margin-top: 1.5rem; padding: 3.5rem 0; }
-  .film-strip-stage { height: 500px; }   /* slightly tighter on narrow screens */
+  .film-section { margin-top: 0; padding: 2rem 0 3.5rem; }
+  .film-strip-stage { height: 514px; }   /* slightly tighter on narrow screens (+14 for text row) */
 
   .book-card-inner { flex-direction: column; align-items: flex-start; }
   .book-card-policies { grid-template-columns: 1fr; }

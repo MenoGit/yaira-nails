@@ -114,10 +114,14 @@ document.addEventListener('DOMContentLoaded', () => {
       lightboxImage.style.backgroundImage = computed;
       lightboxCap.textContent = cap;
       lightbox.classList.add('open');
+      document.body.classList.add('lightbox-open');
     });
   });
 
-  function closeLightbox() { lightbox.classList.remove('open'); }
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.classList.remove('lightbox-open');
+  }
   lightboxClose.addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox) closeLightbox();
@@ -215,17 +219,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const SCROLL_SPEED = 35;        // px/sec
     const EXAMPLES_COUNT = 13;
     const TOTAL_WIDTH = FRAME_WIDTH * EXAMPLES_COUNT;   // = 4160
-    const DRAG_THRESHOLD = 5;       // px before a press becomes a drag
+
+    // Printed film-stock tracking text along the top sprocket strip.
+    // 40 reps of the 49-char segment ≈ 16.6k chars — comfortably wider
+    // than the 12480px track at 8px monospace + 0.25em letter-spacing.
+    const trackingText = document.getElementById('filmTrackingText');
+    if (trackingText) {
+      const segment = 'Y. SOTO · 35MM · YAIRA NAIL CREATIONS · ↑ ↑ ↑ · ';
+      trackingText.textContent = segment.repeat(40);
+    }
+    const DRAG_THRESHOLD = 8;       // px before a press becomes a drag (was 5)
 
     let scrollPos = 0;
-    let isPaused = false;
+    let isHovered = false;
+    let isPressed = false;          // pause auto-scroll while held, even before any drag
+    let isPaused = false;            // derived: hovered OR pressed
     let isDragging = false;
     let pressed = false;
     let didDrag = false;
     let pressX = 0;
+    let pressY = 0;
     let scrollAtPress = 0;
+    let activePointerId = null;
     let lastTime = 0;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function updatePause() {
+      // Auto-scroll pauses while the cursor is over the strip OR the user
+      // has a press held — keeps the card stationary between mousedown
+      // and mouseup so a click doesn't get re-targeted by drift.
+      isPaused = isHovered || isPressed;
+    }
 
     const frames = track.querySelectorAll('.film-frame');
 
@@ -272,48 +296,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hover pause (desktop only — :hover is sticky on touch).
     if (window.matchMedia('(hover: hover)').matches) {
-      stage.addEventListener('mouseenter', () => { isPaused = true; });
-      stage.addEventListener('mouseleave', () => {
-        isPaused = false;
-        if (pressed) {
-          pressed = false;
-          isDragging = false;
-          stage.classList.remove('is-dragging');
-        }
-      });
+      stage.addEventListener('mouseenter', () => { isHovered = true; updatePause(); });
+      stage.addEventListener('mouseleave', () => { isHovered = false; updatePause(); });
     }
 
-    // Pointer events unify mouse + touch for drag handling.
+    // Pointer events unify mouse + touch for drag handling. Listen for
+    // move/up on the document (not the stage) and DON'T setPointerCapture —
+    // that capture redirects mouse-compat events (including the synthesized
+    // click) to the capture target, so the click would never reach the
+    // .film-frame button. Document-level move/up keeps things working
+    // even when the pointer leaves the stage during a drag.
     function onPointerDown(e) {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       pressed = true;
+      isPressed = true;
       didDrag = false;
       isDragging = false;
       pressX = e.clientX;
+      pressY = e.clientY;
       scrollAtPress = scrollPos;
-      try { stage.setPointerCapture(e.pointerId); } catch (_) {}
+      activePointerId = e.pointerId;
+      updatePause();              // FORCE-PAUSE on press, not just hover
     }
     function onPointerMove(e) {
       if (!pressed) return;
-      const delta = pressX - e.clientX;
-      if (!isDragging && Math.abs(delta) > DRAG_THRESHOLD) {
+      if (e.pointerId !== undefined && activePointerId !== null && e.pointerId !== activePointerId) return;
+      const dx = pressX - e.clientX;
+      const dy = pressY - e.clientY;
+      if (!isDragging && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) {
         isDragging = true;
         didDrag = true;
         stage.classList.add('is-dragging');
       }
       if (isDragging) {
-        scrollPos = scrollAtPress + delta;
+        scrollPos = scrollAtPress + dx;
       }
     }
-    function onPointerUp() {
+    function onPointerUp(e) {
+      if (!pressed) return;
+      if (e && e.pointerId !== undefined && activePointerId !== null && e.pointerId !== activePointerId) return;
       pressed = false;
+      isPressed = false;
       isDragging = false;
+      activePointerId = null;
       stage.classList.remove('is-dragging');
+      updatePause();
+      // didDrag stays as-is here — the click handler runs immediately
+      // after pointerup (same task) and needs the value. Next pointerdown
+      // will reset it.
     }
     stage.addEventListener('pointerdown', onPointerDown);
-    stage.addEventListener('pointermove', onPointerMove);
-    stage.addEventListener('pointerup', onPointerUp);
-    stage.addEventListener('pointercancel', onPointerUp);
+    document.addEventListener('pointermove', onPointerMove);
+    document.addEventListener('pointerup', onPointerUp);
+    document.addEventListener('pointercancel', onPointerUp);
     // Block native image-drag from stealing the gesture.
     stage.addEventListener('dragstart', (e) => e.preventDefault());
 
@@ -325,35 +360,73 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalCapName = document.getElementById('filmModalCapName');
     const modalCapSub = document.getElementById('filmModalCapSub');
 
+    // Read the photo URL from the existing .sx-N background-image rules
+    // so we don't duplicate the URL list. Walks up to the document so it
+    // works whether the .sx-N node is on a film-frame or anywhere else.
+    function getServicePhotoUrl(sx) {
+      const probe = document.querySelector('.sx-' + sx);
+      if (!probe) return '';
+      const bg = window.getComputedStyle(probe).backgroundImage || '';
+      const m = bg.match(/url\((["']?)(.+?)\1\)/);
+      return m ? m[2] : '';
+    }
+
     function openModal(sx, name) {
-      if (!modal || !modalPhoto) return;
-      // Reuse the same .sx-N class so we don't duplicate the URL list here.
-      modalPhoto.className = 'film-modal-photo sx-' + sx;
+      console.log('[modal] openModal called', { sx: sx, name: name });
+      if (!modal || !modalPhoto) {
+        console.log('[modal] BAILED — missing element', { modal: modal, modalPhoto: modalPhoto });
+        return;
+      }
+      const url = getServicePhotoUrl(sx);
+      // Reset develop state BEFORE setting src so the dim baseline paints
+      // before the new image appears and the transition begins from there.
+      modalPhoto.classList.remove('developed');
+      modalPhoto.src = url;
+      modalPhoto.alt = name;
       if (modalCapName) modalCapName.textContent = name;
       if (modalCapSub) modalCapSub.textContent = 'By Yaira';
       modal.classList.add('is-open');
       modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('lightbox-open');
       document.body.style.overflow = 'hidden';
+      // Wait two paint frames so the desaturated/dim baseline renders
+      // first, then add .developed so the 900ms filter transition fires.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          modalPhoto.classList.add('developed');
+        });
+      });
+      console.log('[modal] should now be open, .is-open class added');
     }
     function closeModal() {
       if (!modal) return;
       modal.classList.remove('is-open');
       modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('lightbox-open');
       document.body.style.overflow = '';
+      // Reset so the next open starts undeveloped again.
+      if (modalPhoto) modalPhoto.classList.remove('developed');
     }
 
-    // Click each frame to open — drag suppresses click via didDrag flag.
-    frames.forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        if (didDrag) {
-          e.preventDefault();
-          e.stopPropagation();
-          return;
-        }
-        const sx = btn.getAttribute('data-sx');
-        const name = btn.getAttribute('data-name') || '';
-        openModal(sx, name);
-      });
+    // Click DELEGATION on the stage: catches the click whether it lands on
+    // a .film-frame button itself or on the parent container (which can
+    // happen if the track moves between mousedown and mouseup, retargeting
+    // the click to a common ancestor). Bails if a real drag occurred.
+    stage.addEventListener('click', (e) => {
+      const btn = e.target.closest('.film-frame');
+      const dist = Math.max(
+        Math.abs((e.clientX || 0) - pressX),
+        Math.abs((e.clientY || 0) - pressY)
+      );
+      console.log('[svc-ex] click fired', { target: e.target, frame: btn, sx: btn && btn.getAttribute('data-sx') });
+      console.log('[click guard] wasDragged=', didDrag, ' distance=', dist);
+      if (!btn) return;
+      if (didDrag) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      openModal(btn.getAttribute('data-sx'), btn.getAttribute('data-name') || '');
     });
 
     if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);

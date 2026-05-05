@@ -352,11 +352,17 @@
 
         <div class="film-strip" id="filmStrip">
           <div class="film-strip-stage" id="filmStage">
-            <div class="film-grain" aria-hidden="true"></div>
-            <div class="film-edge film-edge--top" aria-hidden="true"></div>
-            <div class="film-edge film-edge--bottom" aria-hidden="true"></div>
-
             <div class="film-track" id="filmTrack">
+              <!-- Grain + worn edges live INSIDE the track so they
+                   translate with the film stock. Stage stays cream. -->
+              <div class="film-grain" aria-hidden="true"></div>
+              <div class="film-edge film-edge--top" aria-hidden="true"></div>
+              <div class="film-edge film-edge--bottom" aria-hidden="true"></div>
+              <!-- Printed film-stock tracking text. Sits BEHIND the top
+                   sprocket row so the cream sprocket holes punch through
+                   the text where they exist; text shows in the dark gaps
+                   between holes. JS fills the textContent on load. -->
+              <div class="film-tracking-text" id="filmTrackingText" aria-hidden="true"></div>
               <div class="film-sprocket-row film-sprocket-row--top" aria-hidden="true"></div>
 
               <div class="film-frames">
@@ -405,8 +411,6 @@
               <div class="film-sprocket-row film-sprocket-row--bottom" aria-hidden="true"></div>
             </div>
 
-            <div class="film-vignette film-vignette--left" aria-hidden="true"></div>
-            <div class="film-vignette film-vignette--right" aria-hidden="true"></div>
           </div>
         </div>
 
@@ -505,6 +509,14 @@
   <!-- FILM MODAL — film-strip examples open here in a mini film frame -->
   <div class="film-modal" id="filmModal" aria-hidden="true">
     <div class="film-modal-backdrop" id="filmModalBackdrop" aria-hidden="true"></div>
+    <!-- Close button is a SIBLING of .film-modal-content (not a child)
+         because .film-modal-content has a transform during entrance,
+         which would break position:fixed for any descendant. -->
+    <button class="film-modal-close" id="filmModalClose" type="button" aria-label="Close">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
     <div class="film-modal-content" role="dialog" aria-modal="true" aria-labelledby="filmModalCapName">
       <div class="film-modal-frame">
         <div class="film-modal-grain" aria-hidden="true"></div>
@@ -513,7 +525,7 @@
           <span></span><span></span><span></span><span></span><span></span>
         </div>
         <div class="film-modal-photo-wrap">
-          <div class="film-modal-photo" id="filmModalPhoto"></div>
+          <img class="film-modal-photo" id="filmModalPhoto" alt="" />
         </div>
         <div class="film-modal-sprockets film-modal-sprockets--bottom" aria-hidden="true">
           <span></span><span></span><span></span><span></span><span></span>
@@ -524,11 +536,6 @@
         <p class="film-modal-cap-name" id="filmModalCapName"></p>
         <p class="film-modal-cap-sub" id="filmModalCapSub"></p>
       </div>
-      <button class="film-modal-close" id="filmModalClose" type="button" aria-label="Close">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <path d="M18 6L6 18M6 6l12 12"/>
-        </svg>
-      </button>
     </div>
   </div>
 
