@@ -600,12 +600,13 @@ img { max-width: 100%; display: block; }
   font-size: 0.95rem;
 }
 
-/* Service Examples — image cards (gradient placeholders) */
+.svc-fills-head,
 .svc-examples-head {
   margin-top: 6rem;
   padding-top: 4rem;
   border-top: 1px solid var(--line);
 }
+.svc-fills-title,
 .svc-examples-title {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 400;
@@ -613,71 +614,309 @@ img { max-width: 100%; display: block; }
   letter-spacing: -0.01em;
   margin: 0.4rem 0 1rem;
 }
+.svc-fills-title em,
 .svc-examples-title em {
   font-style: italic;
   color: var(--rose);
 }
-.svc-fills-head {
-  margin-top: 6rem;
-  padding-top: 4rem;
-  border-top: 1px solid var(--line);
-}
-.svc-fills-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 400;
-  font-size: clamp(1.8rem, 3.4vw, 3rem);
-  letter-spacing: -0.01em;
-  margin: 0.4rem 0 1rem;
-}
-.svc-fills-title em {
-  font-style: italic;
-  color: var(--rose);
-}
-.svc-examples {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
+
+/* ===== FILM STRIP — Examples ====================================
+   Rebuilt from film-strip-REFERENCE.tsx in vanilla HTML/CSS/JS.
+   Tokens (literal hex per design):
+     --film-stock var(--ink)    — rich matte film black
+     --film-cream var(--cream)  — sprocket holes + parchment behind strip
+     --film-matt  #f8f4ef       — cream matting around each photo
+     --film-wine  #722F37       — heading + close-button accent
+   Frame: 240px wide, photo height 300px, sprocket strip 24px, 4 sprockets/frame.
+   ============================================================== */
+.film-section {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--cream);
+  /* Heading sits above on var(--bg); add modest top margin so the
+     parchment band starts a touch below the section-sub. */
   margin-top: 2.5rem;
+  padding: 5rem 0;
 }
-.svc-ex {
-  margin: 0;
+.film-strip {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  /* Explicit (would otherwise inherit from .film-section); ensures the
+     band that hosts the dark stage matches the cream around the
+     vignettes exactly. */
+  background: var(--cream);
+}
+.film-strip-stage {
+  position: relative;
+  /* 8 buffer + 32 sprocket + 10 gap + 420 photo + 10 gap + 32 sprocket + 8 buffer */
+  height: 520px;
+  background: var(--ink);
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+}
+.film-strip-stage.is-dragging { cursor: grabbing; }
+.film-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.film-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(60, 55, 50, 0.4) 10%,
+    rgba(60, 55, 50, 0.3) 50%,
+    rgba(60, 55, 50, 0.4) 90%,
+    transparent 100%);
+}
+.film-edge--top { top: 0; }
+.film-edge--bottom { bottom: 0; }
+.film-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 12480px;       /* 320 × 39 frames */
+  will-change: transform;
+}
+.film-sprocket-row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 32px;
+  /* SVG bg tiles 80px wide so 4 sprocket holes line up across each
+     320px frame. Hole = 14×9, border-radius 1, fill = var(--cream)
+     (#fbf6f2 → URL-encoded %23fbf6f2). y=11.5 centers the 9-tall
+     hole within the 32-tall sprocket strip. */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='32' viewBox='0 0 80 32'><rect x='33' y='11.5' width='14' height='9' rx='1' fill='%23fbf6f2'/></svg>");
+  background-size: 80px 32px;
+  background-repeat: repeat-x;
+}
+.film-sprocket-row--top { top: 8px; }
+.film-sprocket-row--bottom { bottom: 8px; }
+.film-frames {
+  position: absolute;
+  left: 0;
+  top: 50px;            /* 8 buffer + 32 sprocket + 10 gap */
+  height: 420px;
   display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
 }
-.svc-ex-img {
-  aspect-ratio: 4 / 5;
-  border-radius: 14px;
+.film-frame {
+  flex-shrink: 0;
+  width: 320px;
+  height: 420px;
+  padding: 0 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  /* Falloff vars driven by JS rAF loop */
+  transform: scale(var(--film-scale, 1));
+  opacity: var(--film-opacity, 1);
+  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+}
+.film-strip-stage.is-dragging .film-frame { transition: none; }
+.film-frame-inner {
+  display: block;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  background: #f8f4ef;
+  border-radius: 2px;
+  padding: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+.film-frame:hover .film-frame-inner {
+  transform: scale(1.02);
+}
+.film-photo {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 1px;
   background-size: cover;
   background-position: center;
-  background-color: var(--rose-soft);
-  transition: transform 0.5s ease, box-shadow 0.5s ease;
+  background-color: #d0c8bc;   /* fallback while photo loads */
 }
-.svc-ex:hover .svc-ex-img {
-  transform: translateY(-4px);
-  box-shadow: 0 18px 40px -18px rgba(80, 30, 50, 0.25);
+.film-photo-overlay {
+  position: absolute;
+  inset: 8px;
+  border-radius: 1px;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.4) 100%);
 }
-.svc-ex-cap {
+.film-photo-cap {
+  position: absolute;
+  /* 8px matting + 12px inset = 20px so the italic Cormorant title sits
+     12px above the photo's bottom-left corner. */
+  bottom: 20px;
+  left: 20px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  color: #fff;
+  font-size: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+.film-vignette {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  pointer-events: none;
+  z-index: 10;
+}
+@media (min-width: 768px) {
+  .film-vignette { width: 128px; }
+}
+.film-vignette--left {
+  left: 0;
+  background: linear-gradient(to right, var(--cream) 0%, transparent 100%);
+}
+.film-vignette--right {
+  right: 0;
+  background: linear-gradient(to left, var(--cream) 0%, transparent 100%);
+}
+/* Lightbox modal — opens when a film frame is clicked. */
+.film-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease-out;
+}
+.film-modal.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.film-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  /* Solid cream tint at 97% so it reads as var(--cream) (#fbf6f2 = rgb 251,246,242)
+     once the dark film behind is mostly hidden. No gradient — same value end-to-end. */
+  background: rgba(251, 246, 242, 0.97);
+}
+.film-modal-content {
+  position: relative;
+  max-width: 42rem;
+  width: 100%;
+  transform: scale(0.95) translateY(1rem);
+  opacity: 0;
+  transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+}
+.film-modal.is-open .film-modal-content {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+.film-modal-frame {
+  position: relative;
+  background: var(--ink);
+  border-radius: 3px;
+  padding: 1rem;
+  box-shadow:
+    0 25px 80px -20px rgba(0, 0, 0, 0.35),
+    0 10px 30px -10px rgba(0, 0, 0, 0.2);
+}
+@media (min-width: 768px) { .film-modal-frame { padding: 1.25rem; } }
+.film-modal-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  border-radius: 3px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.film-modal-sprockets {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  padding: 0 0.25rem;
+  padding: 0 4px;
 }
-.svc-ex-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.15rem;
-  font-weight: 500;
-  color: var(--ink);
+.film-modal-sprockets--top { margin-bottom: 1rem; }
+.film-modal-sprockets--bottom { margin-top: 1rem; }
+.film-modal-sprockets > span {
+  display: block;
+  width: 16px;
+  height: 10px;
+  background: var(--cream);
+  border-radius: 1px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
 }
-.svc-ex-price {
+.film-modal-photo-wrap {
+  position: relative;
+  background: #f8f4ef;
+  border-radius: 2px;
+  padding: 10px;
+  overflow: hidden;
+}
+.film-modal-photo {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 1px;
+  background-size: cover;
+  background-position: center;
+  background-color: #d0c8bc;
+}
+.film-modal-cap {
+  margin-top: 2rem;
+  text-align: center;
+}
+.film-modal-cap-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.05rem;
-  color: var(--rose);
-  white-space: nowrap;
+  font-style: italic;
+  color: #722F37;
+  font-size: clamp(1.875rem, 4vw, 2.25rem);
+  margin-bottom: 0.5rem;
+}
+.film-modal-cap-sub {
+  font-family: 'Cormorant Garamond', serif;
+  color: rgba(114, 47, 55, 0.5);
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.film-modal-close {
+  position: absolute;
+  top: -0.75rem;
+  right: -0.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: #722F37;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(114, 47, 55, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+.film-modal-close:hover { transform: scale(1.1); }
+@media (min-width: 768px) {
+  .film-modal-close { top: -1rem; right: -1rem; }
 }
 
-/* service example photos — mapped from reference set */
+/* service example photos — mapped from reference set; reused by .film-photo */
 .sx-1,.sx-2,.sx-3,.sx-4,.sx-5,.sx-6,.sx-7,.sx-8,.sx-9,.sx-10,.sx-11,.sx-12,.sx-13 {
   background-size: cover;
   background-position: center;
@@ -696,10 +935,6 @@ img { max-width: 100%; display: block; }
 .sx-11 { background-image: url('photos/services/11-gel-pedicure.jpg'); }
 .sx-12 { background-image: url('photos/services/12-builder-gel-pedicure.jpg'); }
 .sx-13 { background-image: url('photos/services/13-acrylic-pedicure.jpg'); }
-
-@media (max-width: 1100px) {
-  .svc-examples { grid-template-columns: repeat(3, 1fr); }
-}
 
 /* ===== BOOK ===== */
 .book {
@@ -937,11 +1172,8 @@ img { max-width: 100%; display: block; }
   .svc-desc { grid-column: span 2; color: var(--ink-soft); }
   .svc:hover { padding-left: 0; padding-right: 0; background: transparent; }
 
-  .svc-examples {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-  .svc-examples-head { margin-top: 4rem; padding-top: 2.5rem; }
+  .film-section { margin-top: 1.5rem; padding: 3.5rem 0; }
+  .film-strip-stage { height: 500px; }   /* slightly tighter on narrow screens */
 
   .book-card-inner { flex-direction: column; align-items: flex-start; }
   .book-card-policies { grid-template-columns: 1fr; }

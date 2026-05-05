@@ -339,94 +339,77 @@
         </div>
       </div>
 
-      <!-- SERVICE EXAMPLES — image cards (gradient placeholders for now) -->
+      <!-- SERVICE EXAMPLES — heading at normal content width on the
+           regular section background, then a full-bleed parchment band
+           with the dark ink film strip. -->
       <div class="svc-examples-head reveal">
         <div class="about-num">Examples</div>
         <h3 class="svc-examples-title">A few of <em>Yaira's</em> looks.</h3>
-        <p class="section-sub">
-          A peek at what each service can look like. Mix &amp; match — every set is custom.
-        </p>
+        <p class="section-sub">A peek at what each service can look like. Mix &amp; match — every set is custom.</p>
       </div>
 
-      <div class="svc-examples">
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-1"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">Hard Gel</span>
-          </figcaption>
-        </figure>
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-2"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">Builder Gel</span>
-          </figcaption>
-        </figure>
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-3"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">Acrylic Overlay</span>
-          </figcaption>
-        </figure>
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-4"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">Short Acrylic Set</span>
-          </figcaption>
-        </figure>
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-5"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">Medium Acrylic Set</span>
-          </figcaption>
-        </figure>
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-6"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">Long Acrylic Set</span>
-          </figcaption>
-        </figure>
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-7"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">XL Acrylic Set</span>
-          </figcaption>
-        </figure>
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-8"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">XXL Acrylic Set</span>
-          </figcaption>
-        </figure>
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-9"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">Soak Off</span>
-          </figcaption>
-        </figure>
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-10"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">Gel Manicure</span>
-          </figcaption>
-        </figure>
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-11"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">Gel Pedicure</span>
-          </figcaption>
-        </figure>
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-12"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">Builder Gel Pedicure</span>
-          </figcaption>
-        </figure>
-        <figure class="svc-ex reveal">
-          <div class="svc-ex-img sx-13"></div>
-          <figcaption class="svc-ex-cap">
-            <span class="svc-ex-name">Acrylic Pedicure</span>
-          </figcaption>
-        </figure>
+      <div class="film-section">
+
+        <div class="film-strip" id="filmStrip">
+          <div class="film-strip-stage" id="filmStage">
+            <div class="film-grain" aria-hidden="true"></div>
+            <div class="film-edge film-edge--top" aria-hidden="true"></div>
+            <div class="film-edge film-edge--bottom" aria-hidden="true"></div>
+
+            <div class="film-track" id="filmTrack">
+              <div class="film-sprocket-row film-sprocket-row--top" aria-hidden="true"></div>
+
+              <div class="film-frames">
+                <!-- 13 examples × 3 = 39 frames for seamless loop -->
+                <button class="film-frame" type="button" data-sx="1" data-name="Hard Gel"><span class="film-frame-inner"><span class="film-photo sx-1"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Hard Gel</span></span></button>
+                <button class="film-frame" type="button" data-sx="2" data-name="Builder Gel"><span class="film-frame-inner"><span class="film-photo sx-2"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Builder Gel</span></span></button>
+                <button class="film-frame" type="button" data-sx="3" data-name="Acrylic Overlay"><span class="film-frame-inner"><span class="film-photo sx-3"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Acrylic Overlay</span></span></button>
+                <button class="film-frame" type="button" data-sx="4" data-name="Short Acrylic Set"><span class="film-frame-inner"><span class="film-photo sx-4"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Short Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="5" data-name="Medium Acrylic Set"><span class="film-frame-inner"><span class="film-photo sx-5"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Medium Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="6" data-name="Long Acrylic Set"><span class="film-frame-inner"><span class="film-photo sx-6"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Long Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="7" data-name="XL Acrylic Set"><span class="film-frame-inner"><span class="film-photo sx-7"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">XL Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="8" data-name="XXL Acrylic Set"><span class="film-frame-inner"><span class="film-photo sx-8"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">XXL Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="9" data-name="Soak Off"><span class="film-frame-inner"><span class="film-photo sx-9"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Soak Off</span></span></button>
+                <button class="film-frame" type="button" data-sx="10" data-name="Gel Manicure"><span class="film-frame-inner"><span class="film-photo sx-10"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Gel Manicure</span></span></button>
+                <button class="film-frame" type="button" data-sx="11" data-name="Gel Pedicure"><span class="film-frame-inner"><span class="film-photo sx-11"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Gel Pedicure</span></span></button>
+                <button class="film-frame" type="button" data-sx="12" data-name="Builder Gel Pedicure"><span class="film-frame-inner"><span class="film-photo sx-12"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Builder Gel Pedicure</span></span></button>
+                <button class="film-frame" type="button" data-sx="13" data-name="Acrylic Pedicure"><span class="film-frame-inner"><span class="film-photo sx-13"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Acrylic Pedicure</span></span></button>
+                <button class="film-frame" type="button" data-sx="1" data-name="Hard Gel" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-1"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Hard Gel</span></span></button>
+                <button class="film-frame" type="button" data-sx="2" data-name="Builder Gel" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-2"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Builder Gel</span></span></button>
+                <button class="film-frame" type="button" data-sx="3" data-name="Acrylic Overlay" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-3"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Acrylic Overlay</span></span></button>
+                <button class="film-frame" type="button" data-sx="4" data-name="Short Acrylic Set" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-4"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Short Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="5" data-name="Medium Acrylic Set" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-5"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Medium Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="6" data-name="Long Acrylic Set" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-6"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Long Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="7" data-name="XL Acrylic Set" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-7"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">XL Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="8" data-name="XXL Acrylic Set" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-8"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">XXL Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="9" data-name="Soak Off" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-9"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Soak Off</span></span></button>
+                <button class="film-frame" type="button" data-sx="10" data-name="Gel Manicure" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-10"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Gel Manicure</span></span></button>
+                <button class="film-frame" type="button" data-sx="11" data-name="Gel Pedicure" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-11"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Gel Pedicure</span></span></button>
+                <button class="film-frame" type="button" data-sx="12" data-name="Builder Gel Pedicure" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-12"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Builder Gel Pedicure</span></span></button>
+                <button class="film-frame" type="button" data-sx="13" data-name="Acrylic Pedicure" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-13"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Acrylic Pedicure</span></span></button>
+                <button class="film-frame" type="button" data-sx="1" data-name="Hard Gel" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-1"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Hard Gel</span></span></button>
+                <button class="film-frame" type="button" data-sx="2" data-name="Builder Gel" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-2"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Builder Gel</span></span></button>
+                <button class="film-frame" type="button" data-sx="3" data-name="Acrylic Overlay" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-3"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Acrylic Overlay</span></span></button>
+                <button class="film-frame" type="button" data-sx="4" data-name="Short Acrylic Set" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-4"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Short Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="5" data-name="Medium Acrylic Set" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-5"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Medium Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="6" data-name="Long Acrylic Set" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-6"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Long Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="7" data-name="XL Acrylic Set" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-7"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">XL Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="8" data-name="XXL Acrylic Set" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-8"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">XXL Acrylic Set</span></span></button>
+                <button class="film-frame" type="button" data-sx="9" data-name="Soak Off" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-9"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Soak Off</span></span></button>
+                <button class="film-frame" type="button" data-sx="10" data-name="Gel Manicure" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-10"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Gel Manicure</span></span></button>
+                <button class="film-frame" type="button" data-sx="11" data-name="Gel Pedicure" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-11"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Gel Pedicure</span></span></button>
+                <button class="film-frame" type="button" data-sx="12" data-name="Builder Gel Pedicure" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-12"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Builder Gel Pedicure</span></span></button>
+                <button class="film-frame" type="button" data-sx="13" data-name="Acrylic Pedicure" aria-hidden="true" tabindex="-1"><span class="film-frame-inner"><span class="film-photo sx-13"></span><span class="film-photo-overlay"></span><span class="film-photo-cap">Acrylic Pedicure</span></span></button>
+              </div>
+
+              <div class="film-sprocket-row film-sprocket-row--bottom" aria-hidden="true"></div>
+            </div>
+
+            <div class="film-vignette film-vignette--left" aria-hidden="true"></div>
+            <div class="film-vignette film-vignette--right" aria-hidden="true"></div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -510,12 +493,42 @@
 
   </main>
 
-  <!-- LIGHTBOX -->
+  <!-- LIGHTBOX (gallery section uses this — kept simple) -->
   <div class="lightbox" id="lightbox">
     <button class="lightbox-close" id="lightboxClose" aria-label="Close">×</button>
     <div class="lightbox-content">
       <div class="lightbox-image" id="lightboxImage"></div>
       <div class="lightbox-cap" id="lightboxCap"></div>
+    </div>
+  </div>
+
+  <!-- FILM MODAL — film-strip examples open here in a mini film frame -->
+  <div class="film-modal" id="filmModal" aria-hidden="true">
+    <div class="film-modal-backdrop" id="filmModalBackdrop" aria-hidden="true"></div>
+    <div class="film-modal-content" role="dialog" aria-modal="true" aria-labelledby="filmModalCapName">
+      <div class="film-modal-frame">
+        <div class="film-modal-grain" aria-hidden="true"></div>
+        <div class="film-modal-sprockets film-modal-sprockets--top" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="film-modal-photo-wrap">
+          <div class="film-modal-photo" id="filmModalPhoto"></div>
+        </div>
+        <div class="film-modal-sprockets film-modal-sprockets--bottom" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+      <div class="film-modal-cap">
+        <p class="film-modal-cap-name" id="filmModalCapName"></p>
+        <p class="film-modal-cap-sub" id="filmModalCapSub"></p>
+      </div>
+      <button class="film-modal-close" id="filmModalClose" type="button" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
     </div>
   </div>
 

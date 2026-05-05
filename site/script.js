@@ -195,4 +195,174 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.nav-cta, .btn-primary').forEach(makeMagnetic);
 
+  /* ===========================================================
+     FILM STRIP — Examples
+     Mirrors film-strip-REFERENCE.tsx in vanilla JS:
+       • rAF auto-scroll at 35 px/s (delta-time, not CSS keyframes)
+       • mouse + touch drag updates scrollPosition directly
+       • hover anywhere on the strip pauses the scroll
+       • modulo-wraps at TOTAL_WIDTH for seamless loop in both directions
+       • per-frame scale + opacity falloff (center 1, edges ~0.85/0.5)
+       • click on a frame opens the lightbox modal (drag suppresses click)
+       • modal: backdrop / Escape / close-button all dismiss; body scroll locked
+     =========================================================== */
+  (function setupFilmStrip() {
+    const stage = document.getElementById('filmStage');
+    const track = document.getElementById('filmTrack');
+    if (!stage || !track) return;
+
+    const FRAME_WIDTH = 320;
+    const SCROLL_SPEED = 35;        // px/sec
+    const EXAMPLES_COUNT = 13;
+    const TOTAL_WIDTH = FRAME_WIDTH * EXAMPLES_COUNT;   // = 4160
+    const DRAG_THRESHOLD = 5;       // px before a press becomes a drag
+
+    let scrollPos = 0;
+    let isPaused = false;
+    let isDragging = false;
+    let pressed = false;
+    let didDrag = false;
+    let pressX = 0;
+    let scrollAtPress = 0;
+    let lastTime = 0;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const frames = track.querySelectorAll('.film-frame');
+
+    function applyVisualPosition() {
+      // Wrap to [0, TOTAL_WIDTH) — the 3× duplicated track makes the wrap
+      // seamless (positions 0, TOTAL_WIDTH, 2·TOTAL_WIDTH show identical content).
+      let v = scrollPos % TOTAL_WIDTH;
+      if (v < 0) v += TOTAL_WIDTH;
+      track.style.transform = `translateX(${-v}px)`;
+      return v;
+    }
+
+    function applyFalloff(visualPos) {
+      const stageRect = stage.getBoundingClientRect();
+      if (stageRect.width <= 0) return;
+      const stageCenterRel = stageRect.width / 2;        // px from stage left
+      const halfStage = stageRect.width / 2;
+      // Each frame i (in DOM order, 0..38) sits at x = i*FRAME_WIDTH on the
+      // track. Its on-stage center = i*FRAME_WIDTH + FRAME_WIDTH/2 - visualPos.
+      for (let i = 0; i < frames.length; i++) {
+        const frameCenter = i * FRAME_WIDTH + FRAME_WIDTH / 2 - visualPos;
+        const dist = Math.min(1, Math.abs(frameCenter - stageCenterRel) / halfStage);
+        const scale = 1 - dist * 0.15;     // edges ~0.85
+        const opacity = 1 - dist * 0.5;    // edges ~0.5
+        frames[i].style.setProperty('--film-scale', scale.toFixed(3));
+        frames[i].style.setProperty('--film-opacity', opacity.toFixed(3));
+      }
+    }
+
+    function frame(now) {
+      if (!isPaused && !isDragging && !reducedMotion.matches) {
+        const dt = lastTime ? (now - lastTime) / 1000 : 0;
+        lastTime = now;
+        scrollPos += SCROLL_SPEED * dt;
+        if (scrollPos >= TOTAL_WIDTH) scrollPos -= TOTAL_WIDTH;
+      } else {
+        lastTime = now;
+      }
+      const v = applyVisualPosition();
+      applyFalloff(v);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+
+    // Hover pause (desktop only — :hover is sticky on touch).
+    if (window.matchMedia('(hover: hover)').matches) {
+      stage.addEventListener('mouseenter', () => { isPaused = true; });
+      stage.addEventListener('mouseleave', () => {
+        isPaused = false;
+        if (pressed) {
+          pressed = false;
+          isDragging = false;
+          stage.classList.remove('is-dragging');
+        }
+      });
+    }
+
+    // Pointer events unify mouse + touch for drag handling.
+    function onPointerDown(e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      pressed = true;
+      didDrag = false;
+      isDragging = false;
+      pressX = e.clientX;
+      scrollAtPress = scrollPos;
+      try { stage.setPointerCapture(e.pointerId); } catch (_) {}
+    }
+    function onPointerMove(e) {
+      if (!pressed) return;
+      const delta = pressX - e.clientX;
+      if (!isDragging && Math.abs(delta) > DRAG_THRESHOLD) {
+        isDragging = true;
+        didDrag = true;
+        stage.classList.add('is-dragging');
+      }
+      if (isDragging) {
+        scrollPos = scrollAtPress + delta;
+      }
+    }
+    function onPointerUp() {
+      pressed = false;
+      isDragging = false;
+      stage.classList.remove('is-dragging');
+    }
+    stage.addEventListener('pointerdown', onPointerDown);
+    stage.addEventListener('pointermove', onPointerMove);
+    stage.addEventListener('pointerup', onPointerUp);
+    stage.addEventListener('pointercancel', onPointerUp);
+    // Block native image-drag from stealing the gesture.
+    stage.addEventListener('dragstart', (e) => e.preventDefault());
+
+    /* ----- MODAL ----- */
+    const modal = document.getElementById('filmModal');
+    const modalBackdrop = document.getElementById('filmModalBackdrop');
+    const modalClose = document.getElementById('filmModalClose');
+    const modalPhoto = document.getElementById('filmModalPhoto');
+    const modalCapName = document.getElementById('filmModalCapName');
+    const modalCapSub = document.getElementById('filmModalCapSub');
+
+    function openModal(sx, name) {
+      if (!modal || !modalPhoto) return;
+      // Reuse the same .sx-N class so we don't duplicate the URL list here.
+      modalPhoto.className = 'film-modal-photo sx-' + sx;
+      if (modalCapName) modalCapName.textContent = name;
+      if (modalCapSub) modalCapSub.textContent = 'By Yaira';
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    // Click each frame to open — drag suppresses click via didDrag flag.
+    frames.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        if (didDrag) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        const sx = btn.getAttribute('data-sx');
+        const name = btn.getAttribute('data-name') || '';
+        openModal(sx, name);
+      });
+    });
+
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && modal.classList.contains('is-open')) {
+        closeModal();
+      }
+    });
+  })();
+
 });
