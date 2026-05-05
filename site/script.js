@@ -246,7 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let scrollAtPress = 0;
     let activePointerId = null;
     let lastTime = 0;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     function updatePause() {
       // Auto-scroll pauses while the cursor is over the strip OR the user
@@ -299,7 +298,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', syncDimensions);
 
     function frame(now) {
-      if (!isPaused && !isDragging && !reducedMotion.matches) {
+      // Reduced-motion check intentionally NOT here. iOS Safari often
+      // reports prefers-reduced-motion: reduce even when the user
+      // hasn't explicitly opted in, and auto-scroll is part of the
+      // section's identity (without it the other 12 services aren't
+      // visible) — so we honor user intent over the OS hint.
+      if (!isPaused && !isDragging) {
         const dt = lastTime ? (now - lastTime) / 1000 : 0;
         lastTime = now;
         scrollPos += SCROLL_SPEED * dt;
@@ -311,7 +315,19 @@ document.addEventListener('DOMContentLoaded', () => {
       applyFalloff(v);
       requestAnimationFrame(frame);
     }
-    requestAnimationFrame(frame);
+    // Belt-and-suspenders kick. The IIFE runs on DOMContentLoaded and
+    // schedules rAF once. If anything (stalled paint, deferred
+    // resource, mobile Safari quirk) drops that first rAF on the
+    // floor, window.load re-schedules. rafKicked guards against
+    // ever starting two concurrent loops.
+    let rafKicked = false;
+    function startMarquee() {
+      if (rafKicked) return;
+      rafKicked = true;
+      requestAnimationFrame(frame);
+    }
+    startMarquee();
+    window.addEventListener('load', startMarquee);
 
     // Hover pause (desktop only — :hover is sticky on touch).
     if (window.matchMedia('(hover: hover)').matches) {
@@ -368,9 +384,12 @@ document.addEventListener('DOMContentLoaded', () => {
       // will reset it.
     }
     stage.addEventListener('pointerdown', onPointerDown);
-    document.addEventListener('pointermove', onPointerMove);
-    document.addEventListener('pointerup', onPointerUp);
-    document.addEventListener('pointercancel', onPointerUp);
+    // STEP 5 — passive: true. We never preventDefault inside these
+    // handlers, so marking them passive lets mobile browsers continue
+    // their native pan-y scroll without a render bottleneck.
+    document.addEventListener('pointermove', onPointerMove, { passive: true });
+    document.addEventListener('pointerup', onPointerUp, { passive: true });
+    document.addEventListener('pointercancel', onPointerUp, { passive: true });
     // Block native image-drag from stealing the gesture.
     stage.addEventListener('dragstart', (e) => e.preventDefault());
 
