@@ -673,6 +673,33 @@ body.lightbox-open a {
      next dark section begins. */
   margin-top: 0;
   padding: 2.5rem 0 4rem;
+  /* 3D context for the slight rotateX tilt on .film-strip-stage. */
+  perspective: 2000px;
+  perspective-origin: 50% 50%;
+}
+/* Recessed-page gradients at the top + bottom of the cream band — the
+   page itself looks like it's sinking around where the film emerges. */
+.film-section::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 30px;
+  background: linear-gradient(to bottom, rgba(26, 14, 18, 0.08), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+.film-section::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30px;
+  background: linear-gradient(to top, rgba(26, 14, 18, 0.08), transparent);
+  pointer-events: none;
+  z-index: 1;
 }
 .film-strip {
   position: relative;
@@ -699,6 +726,55 @@ body.lightbox-open a {
   user-select: none;
   -webkit-user-select: none;
   touch-action: pan-y;
+  /* === 3D protrusion illusion ===
+     Heavy double-direction shadows lift the strip off the cream page.
+     A subtle -2deg rotateX angles it slightly forward at the bottom
+     so it doesn't read as perfectly parallel to the page (perspective
+     is set on .film-section). will-change keeps it on its own GPU
+     layer so the tilt + scrolling track stay smooth. */
+  box-shadow:
+    0 -28px 50px -12px rgba(26, 14, 18, 0.45),
+    0  28px 50px -12px rgba(26, 14, 18, 0.45),
+    0 0 0 1px rgba(0, 0, 0, 0.15);
+  transform: rotateX(-2deg);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+/* Thin warm highlight catching the protruding TOP edge */
+.film-strip-stage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 240, 220, 0.5) 15%,
+    rgba(255, 240, 220, 0.7) 50%,
+    rgba(255, 240, 220, 0.5) 85%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+/* Mirror highlight on the BOTTOM edge — slightly dimmer (lit from above) */
+.film-strip-stage::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 240, 220, 0.25) 15%,
+    rgba(255, 240, 220, 0.4) 50%,
+    rgba(255, 240, 220, 0.25) 85%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 10;
 }
 .film-strip-stage.is-dragging { cursor: grabbing; }
 /* Film grain + worn edges removed in favor of a clean polished
@@ -1042,7 +1118,12 @@ body.lightbox-open a {
 .sx-12 { background-image: url('photos/services/12-builder-gel-pedicure.jpg'); }
 .sx-13 { background-image: url('photos/services/13-acrylic-pedicure.jpg'); }
 
-/* ===== BOOK ===== */
+/* ===== BOOK ============================================================
+   Dark wine page with a soft holographic glow in the corner — moody,
+   editorial. Cream calendar card pops bright against the dark; the
+   right-side CTA is an outlined zone (not a filled card) so buttons
+   float against the page rather than sitting on a darker rectangle.
+   ====================================================================== */
 .book {
   background: var(--ink);
   color: var(--cream);
@@ -1051,77 +1132,368 @@ body.lightbox-open a {
   overflow: hidden;
 }
 .book::before {
+  /* Holographic glow blob in the top-right corner. */
   content: '';
   position: absolute;
   top: -10vw; right: -10vw;
   width: 40vw; height: 40vw;
-  border-radius: 50%;
   background: var(--holo);
-  filter: blur(100px);
-  opacity: 0.3;
+  opacity: 0.18;
+  filter: blur(80px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
 }
-.book-inner { position: relative; max-width: 1100px; }
-.book-card {
-  margin-top: 2rem;
-  background: rgba(251, 246, 242, 0.04);
-  border: 1px solid rgba(251, 246, 242, 0.15);
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-  overflow: hidden;
-}
-.book-card-inner {
-  display: flex;
-  align-items: center; justify-content: space-between;
-  gap: 2rem;
-  padding: 2.5rem;
-  flex-wrap: wrap;
-}
-.book-card-label {
-  font-size: 0.7rem; letter-spacing: 0.25em;
-  text-transform: uppercase; color: rgba(251,246,242,0.55);
-  margin-bottom: 0.5rem;
-}
-.book-card-title {
+/* Foreground content sits above the glow. */
+.book-head, .book-grid { position: relative; z-index: 1; }
+
+.book-head { max-width: 700px; margin-bottom: 4rem; }
+.book .about-num { color: rgba(251, 246, 242, 0.55); }
+.book-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.5rem, 2.8vw, 2.3rem);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 5vw, 4.5rem);
+  color: var(--cream);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0.5rem 0 1.2rem;
+}
+.book-title em {
+  /* Holographic gradient on the italic word — same treatment as the
+     hero's "Yaira" / "Made / detail" italics. */
+  font-style: italic;
+  background: var(--holo);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.book-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: rgba(251, 246, 242, 0.7);
+  max-width: 540px;
+  line-height: 1.6;
+}
+.book-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* --- Calendar (left) --- */
+.book-cal-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: rgba(251, 246, 242, 0.6);
+  margin: 0 0 1.2rem;
 }
-.book-card-desc {
-  margin-top: 0.5rem;
-  color: rgba(251,246,242,0.7);
-  max-width: 36ch;
+.book-cal-frame {
+  /* Outlined zone — FullCalendar handles its own surface color, so the
+     frame just provides a subtle bordered container with the standard
+     drop shadow used on the rest of the cards on this dark section. */
+  background: transparent;
+  border: 1px solid rgba(251, 246, 242, 0.12);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.5);
 }
-.btn-primary {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background: var(--cream); color: var(--ink);
+
+/* === FullCalendar — themed to match the dark wine + cream + rose
+       palette. FC exposes most colors via CSS custom properties; the
+       rules below override its defaults plus a few selectors for
+       typography that aren't variable-driven. === */
+#yaira-calendar {
+  font-family: 'Inter', sans-serif;
+  height: 540px;
+  --fc-page-bg-color: transparent;
+  --fc-border-color: rgba(251, 246, 242, 0.12);
+  --fc-button-bg-color: transparent;
+  --fc-button-border-color: rgba(251, 246, 242, 0.3);
+  --fc-button-text-color: var(--cream);
+  --fc-button-hover-bg-color: var(--rose);
+  --fc-button-hover-border-color: var(--rose);
+  --fc-button-hover-text-color: var(--cream);
+  --fc-button-active-bg-color: var(--rose);
+  --fc-button-active-border-color: var(--rose);
+  --fc-today-bg-color: rgba(193, 66, 103, 0.05);
+  --fc-now-indicator-color: var(--rose);
+  --fc-bg-event-color: rgba(193, 66, 103, 0.45);
+  --fc-bg-event-opacity: 1;
+  --fc-neutral-bg-color: transparent;
+}
+.fc .fc-toolbar-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  color: var(--cream);
+  font-size: 1.3rem;
+  letter-spacing: 0.02em;
+}
+.fc .fc-button {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  padding: 0.5rem 0.9rem;
   border-radius: 999px;
-  font-size: 0.85rem; font-weight: 500;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  transition: transform 0.3s ease, background 0.3s ease;
+  font-weight: 500;
+  box-shadow: none !important;
 }
-.btn-primary:hover {
-  background: var(--rose); color: var(--cream);
+.fc .fc-button:focus,
+.fc .fc-button:focus-visible {
+  box-shadow: none !important;
+  outline: none;
+}
+.fc .fc-col-header-cell-cushion {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(251, 246, 242, 0.6);
+  padding: 1rem 0;
+  text-decoration: none;
+}
+.fc .fc-timegrid-slot-label-cushion,
+.fc .fc-timegrid-axis-cushion {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: rgba(251, 246, 242, 0.5);
+  letter-spacing: 0.05em;
+}
+.fc .fc-scrollgrid,
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border-color: rgba(251, 246, 242, 0.10);
+}
+.fc-bg-event {
+  background: rgba(193, 66, 103, 0.45) !important;
+  opacity: 1 !important;
+  position: relative;
+}
+/* Hide raw event title text on background events */
+.fc-bg-event .fc-event-title,
+.fc-bg-event-title {
+  display: none !important;
+}
+/* Show real time range from data-time attribute (set in eventDidMount) */
+.fc-bg-event::after {
+  content: attr(data-time);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--cream);
+  opacity: 0.85;
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+/* No label on background events without a data-time attribute (i.e. the
+   static .yaira-closed-block events — they're decorative, not bookings) */
+.fc-bg-event:not([data-time])::after {
+  content: none !important;
+}
+/* Static closed-time blocks — visible diagonal stripes, override .fc-bg-event */
+.yaira-closed-block {
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(251, 246, 242, 0.18),
+      rgba(251, 246, 242, 0.18) 8px,
+      transparent 8px,
+      transparent 16px
+    ),
+    rgba(0, 0, 0, 0.4) !important;
+  opacity: 1 !important;
+}
+/* Closed hours — strong diagonal stripes, no text. Day-header hours line
+   carries the "when she's open" message; stripes alone say "not bookable".
+   !important wins against FullCalendar's default cell backgrounds. */
+.fc .fc-non-business,
+.fc-timegrid-col .fc-non-business {
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(251, 246, 242, 0.35),
+      rgba(251, 246, 242, 0.35) 8px,
+      transparent 8px,
+      transparent 16px
+    ),
+    rgba(0, 0, 0, 0.3) !important;
+  position: relative;
+}
+/* Sunday — fully closed, heavier stripes + rotated CLOSED label */
+.fc-day-sun.fc-timegrid-col {
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(251, 246, 242, 0.08),
+      rgba(251, 246, 242, 0.08) 8px,
+      transparent 8px,
+      transparent 16px
+    ),
+    rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+.fc-day-sun.fc-timegrid-col::before {
+  content: 'CLOSED';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  transform-origin: center center;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.8rem;
+  letter-spacing: 0.4em;
+  color: rgba(251, 246, 242, 0.35);
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 2;
+}
+/* Two-line day header rendered by dayHeaderContent — day + weekday on top,
+   working hours (or "Closed") on the line below */
+.fc-day-header-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.4rem 0;
+}
+.fc-day-header-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--cream);
+  text-transform: uppercase;
+}
+.fc-day-header-hours {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.68rem;
+  color: rgba(251, 246, 242, 0.5);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.fc .fc-timegrid-now-indicator-line {
+  border-color: var(--rose);
+}
+.book-cal-legend {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(251, 246, 242, 0.6);
+  margin-top: 1rem;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+.book-cal-legend > span { display: inline-flex; align-items: center; }
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+.legend-open { background: transparent; border: 1px solid rgba(251, 246, 242, 0.5); }
+.legend-booked { background: var(--rose); }
+
+/* --- CTA stack (right) ---
+   Outlined zone (not filled) — buttons float against the dark page
+   instead of stacking on a darker card. */
+.book-cta {
+  background: transparent;
+  border: 1px solid rgba(251, 246, 242, 0.12);
+  color: var(--cream);
+  padding: 3rem 2.5rem;
+  border-radius: 14px;
+  position: relative;
+  overflow: visible;
+}
+.book-cta-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  color: var(--rose);
+  margin: 0 0 0.6rem;
+  position: relative;
+  z-index: 1;
+}
+.book-cta-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 2rem;
+  color: var(--cream);
+  margin: 0 0 2rem;
+  position: relative;
+  z-index: 1;
+}
+.book-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.1rem 1.5rem;
+  border-radius: 999px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  margin-bottom: 0.9rem;
+  position: relative;
+  z-index: 1;
+}
+.book-btn-primary {
+  background: var(--rose);
+  color: var(--cream);
+}
+.book-btn-primary:hover {
+  background: var(--cream);
+  color: var(--ink);
   transform: translateX(4px);
 }
-.book-card-policies {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  padding: 2rem 2.5rem;
-  border-top: 1px solid rgba(251,246,242,0.1);
+.book-btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(251, 246, 242, 0.4);
+  color: var(--cream);
 }
-.book-card-policies > div { display: flex; flex-direction: column; gap: 0.4rem; }
-.book-card-policies b {
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--rose-soft);
-  font-weight: 500;
+.book-btn-secondary:hover {
+  border-color: var(--rose);
+  color: var(--rose);
+  transform: translateX(4px);
 }
-.book-card-policies span {
-  font-size: 0.9rem;
-  color: rgba(251,246,242,0.7);
+.book-btn-arrow { font-size: 1.1rem; }
+.book-meta {
+  list-style: none;
+  padding: 1.6rem 0 0;
+  margin: 1.2rem 0 0;
+  border-top: 1px solid rgba(251, 246, 242, 0.15);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: rgba(251, 246, 242, 0.65);
+  position: relative;
+  z-index: 1;
+}
+.book-meta li { padding: 0.3rem 0; }
+
+@media (max-width: 900px) {
+  .book-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  #yaira-calendar { height: 460px; font-size: 0.85rem; }
+  .fc .fc-toolbar-title { font-size: 1.1rem; }
+  .book-cta { padding: 2.4rem 1.8rem; }
 }
 
 /* ===== CONTACT ===== */

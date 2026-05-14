@@ -1,5 +1,6 @@
 # Claude AI Configuration
 .claude/
+CLAUDE.md
 
 # Python
 __pycache__/
@@ -48,3 +49,4 @@ yarn-error.log*
 # OS
 Thumbs.db
 .DS_Store
+*:Zone.Identifier

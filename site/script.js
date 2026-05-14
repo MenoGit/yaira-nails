@@ -468,4 +468,110 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   })();
 
+  /* ===========================================================
+     BOOK SECTION — FullCalendar (Google Calendar feed)
+     Replaces the previous iframe so the calendar can be themed in
+     CSS to match the site palette. With display: 'background' the
+     busy times render as rose-tinted blocks WITHOUT exposing event
+     titles or details — clients see "this slot is booked" only.
+     Two values to swap in before launch (see PLACEHOLDER comments). */
+  (function setupBookCalendar() {
+    const calEl = document.getElementById('yaira-calendar');
+    if (!calEl) return;
+    // FullCalendar's CDN scripts are loaded with `defer`. The defer
+    // contract is "after parse, before DOMContentLoaded" but the page-
+    // wide DOMContentLoaded handler we're inside fires after defers, so
+    // FullCalendar should already be defined here. Bail safely if not.
+    if (typeof FullCalendar === 'undefined') return;
+
+    const calendar = new FullCalendar.Calendar(calEl, {
+      initialView: 'timeGridWeek',
+      // PLACEHOLDER — generate at console.cloud.google.com:
+      //   1. New Project   2. Enable Google Calendar API
+      //   3. Credentials → Create API key (restrict to Calendar API)
+      googleCalendarApiKey: 'YOUR_API_KEY_HERE',
+      eventSources: [
+        // Google Calendar feed — Yaira's actual bookings (rose-tinted blocks)
+        {
+          googleCalendarId: '4dc00cf75d57eb30f54fceaee87d4f56a1befc9e79e3b34b62552fa5c8e6c614@group.calendar.google.com',
+          googleCalendarApiKey: 'YOUR_API_KEY_HERE',
+          display: 'background',
+          color: 'rgba(193, 66, 103, 0.45)',
+        },
+        // Static closed-time blocks — render visible striped pattern on
+        // weekday partial-closed hours. Sunday is handled by the column-level
+        // .fc-day-sun rule in CSS and so is intentionally omitted here.
+        {
+          events: [
+            { daysOfWeek: [1], startTime: '08:00', endTime: '10:30', display: 'background', classNames: ['yaira-closed-block'] }, // Mon morning
+            { daysOfWeek: [2], startTime: '08:00', endTime: '12:40', display: 'background', classNames: ['yaira-closed-block'] }, // Tue morning
+            { daysOfWeek: [3], startTime: '08:00', endTime: '10:30', display: 'background', classNames: ['yaira-closed-block'] }, // Wed morning
+            { daysOfWeek: [4], startTime: '08:00', endTime: '12:40', display: 'background', classNames: ['yaira-closed-block'] }, // Thu morning
+            { daysOfWeek: [6], startTime: '11:00', endTime: '21:00', display: 'background', classNames: ['yaira-closed-block'] }, // Sat after 11am
+            { daysOfWeek: [1, 2, 3, 4, 5], startTime: '20:00', endTime: '21:00', display: 'background', classNames: ['yaira-closed-block'] }, // Mon-Fri evening
+          ],
+        },
+      ],
+      eventDidMount: function (info) {
+        if (info.event.start && info.event.end) {
+          const fmt = { hour: 'numeric', minute: '2-digit', hour12: true };
+          const start = info.event.start.toLocaleTimeString('en-US', fmt).replace(' ', '');
+          const end = info.event.end.toLocaleTimeString('en-US', fmt).replace(' ', '');
+          info.el.setAttribute('data-time', `${start} – ${end}`);
+        }
+      },
+      headerToolbar: {
+        left: 'prev,next',
+        center: 'title',
+        right: 'today',
+      },
+      height: 540,
+      slotMinTime: '08:00:00',
+      slotMaxTime: '21:00:00',
+      businessHours: [
+        { daysOfWeek: [1], startTime: '10:30', endTime: '21:00' }, // Monday
+        { daysOfWeek: [2], startTime: '12:40', endTime: '21:00' }, // Tuesday
+        { daysOfWeek: [3], startTime: '10:30', endTime: '21:00' }, // Wednesday
+        { daysOfWeek: [4], startTime: '12:40', endTime: '21:00' }, // Thursday
+        { daysOfWeek: [5], startTime: '08:00', endTime: '21:00' }, // Friday
+        { daysOfWeek: [6], startTime: '08:00', endTime: '11:00' }, // Saturday
+        // Sunday (0) — omitted = fully closed
+      ],
+      allDaySlot: false,
+      nowIndicator: true,
+      firstDay: 1,
+      eventDisplay: 'background',
+      selectable: false,
+      editable: false,
+      expandRows: true,
+      slotDuration: '01:00:00',
+      slotLabelFormat: { hour: 'numeric', hour12: true, meridiem: 'short' },
+      dayHeaderFormat: { weekday: 'short', day: 'numeric' },
+      dayHeaderContent: function (arg) {
+        const date = arg.date;
+        const dayOfWeek = date.getDay();
+        const hoursByDay = {
+          0: 'Closed',
+          1: '10:30AM – 8PM',
+          2: '12:40PM – 8PM',
+          3: '10:30AM – 8PM',
+          4: '12:40PM – 8PM',
+          5: '8AM – 8PM',
+          6: '8AM – 11AM',
+        };
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+        const dayNum = date.getDate();
+        return {
+          html: `
+            <div class="fc-day-header-stack">
+              <div class="fc-day-header-name">${dayNum} ${dayName}</div>
+              <div class="fc-day-header-hours">${hoursByDay[dayOfWeek]}</div>
+            </div>
+          `,
+        };
+      },
+    });
+    calendar.render();
+  })();
+
 });
