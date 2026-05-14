@@ -488,7 +488,9 @@ document.addEventListener('DOMContentLoaded', () => {
       initialView: 'timeGridWeek',
       // PLACEHOLDER — generate at console.cloud.google.com:
       //   1. New Project   2. Enable Google Calendar API
-      //   3. Credentials → Create API key (restrict to Calendar API)
+      //   3. Credentials → Create API key
+      //   4. Restrict it: HTTP referrer (your domain) + Calendar API only
+      // A restricted client-side key is safe to commit; an unrestricted one is not.
       googleCalendarApiKey: 'YOUR_API_KEY_HERE',
       eventSources: [
         // Google Calendar feed — Yaira's actual bookings (rose-tinted blocks)
